@@ -1,0 +1,185 @@
+    <div class="container my-5">
+        <div class="col-12">
+            <div class="row p-x-5">
+                <div class="col-lg-4 col-md-4 col-sm-4 form-group">
+                    <label for="mainCategory">Please Select Main Category</label><br>
+                    <select name="" id="mainCategory" value="-1" class="form-control">
+                        <option value="-1">All</option>
+                        {% for category in categories %}
+                            {% if not category.parentid %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 form-group">
+                    <label for="subCategories">Please Select Food Category</label><br>
+                    <select name="" id="subCategories" value="-1" class="form-control">
+                        <option value="-1" data-pid="-1"
+                                data-id="-1">All
+                        </option>
+                        {% for category in categories %}
+                            {% if category.parentid %}
+                                <option value="{{ category.id }}" data-pid="{{ category.parentid.id }}"
+                                        data-id="{{ category.id }}">{{ category.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+
+                    </select>
+                    <script>
+                        let maincat = document.getElementById('mainCategory');
+                        let subcat = document.getElementById('subCategories');
+
+                        //on value change on main category select box
+                        maincat.onchange = function (e) {
+                            console.log('Hello');
+
+                            for (i = 0; i < subcat.options.length; i++) {
+                                // console.log(subcat.options[i])
+                                var item = subcat.options[i];
+                                if (item.dataset.pid == -1) {
+                                    item.hidden = false;
+                                }
+                                if (maincat.value == "-1") {
+                                    item.hidden = false;
+                                } else {
+                                    if (maincat.value == item.dataset.pid) {
+                                        item.hidden = false;
+                                    } else {
+                                        item.hidden = true;
+                                        if (subcat.value == item.dataset.id) {
+                                            subcat.value = -1;
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                    </script>
+                </div>
+
+                <div class="col-lg-4 col-md-4 col-sm-4 form-group">
+                    <label for="search">Please Select Food Category</label><br>
+                    <input type="text" name="" id="search" class="form-control">
+                </div>
+
+            </div>
+            <div class="row justify-content-center" id="mealContainer">
+                {% set break = false %}
+                {% set lt = listLimit ? listLimit : 6 %}
+                {% for food in foods if not break %}
+                        {% if showAllMenu == false and loop.index == lt %}
+                            {% set break = true %}
+                        {% endif %}
+                        <div class="card col-lg-3 col-md-3 col-sm-12 m-3 p-0" data-catid="{{ food.category.id }}" data-id="{{ food.id }}"
+                            data-name="{{ food.name }}" data-description="{{ food.description }}" data-price="{{ food.price }}">
+                            <a href="dafedf.html" >
+                            <img src="{{ asset('Upload/Images/') }}/{{ food.image.location }}" class="card-img-top"
+                                 alt="..." style="object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title title">{{ food.name }}</h5>
+                                <span class="badge badge-dark price"><i class="fa fa-dollar"></i> {{ food.price }}</span>
+
+                                <p class="card-text text-truncate description">{{ food.description }}</p>
+                            </a>
+
+                            <a href="#" class="btn btn-primary btn-sm float-right">Order</a>
+                                <a href="#" class="btn btn-outline-secondary btn-sm float-left"><i
+                                            class="fa fa-shopping-cart"></i> Add To Cart</a>
+                            </div>
+                        </div>
+                {% else %}
+                    <p class="display-1">There is no Meal to list</p>
+                {% endfor %}
+            </div>
+
+        </div>
+        <script>
+            const mealContainer = document.getElementById('mealContainer');
+            const search = document.getElementById('search');
+
+
+
+            subcat.onchange = function (e) {
+                if (subcat.value == -1) {
+                    for (i = 0; i < mealContainer.children.length; i++) {
+                        if('d-none' in mealContainer.children[i].classList)
+                        {
+                            // if(!currentItem.classList.contains('search-result'))
+                                mealContainer.children[i].classList.remove('d-none');
+                        }
+                    }
+                    console.log("Shown All Meals");
+                } else {
+                    for (i = 0; i < mealContainer.children.length; i++) {
+                        const id = mealContainer.children[i].dataset.id;
+                        const catid = mealContainer.children[i].dataset.catid;
+                        // console.log('id', id, 'catid', catid, 'subcat.value', subcat.value);
+
+                        if(subcat.value == catid)
+                        {
+                            // if(!currentItem.classList.contains('search-result'))
+                                mealContainer.children[i].classList.remove('d-none');
+                        }else
+                        {
+                            mealContainer.children[i].classList.add('d-none');
+                        }
+                    }
+                }
+                onsearchChange(e);
+            };
+
+            search.addEventListener("keypress", onsearchChange);
+            search.addEventListener("change", onsearchChange);
+            search.addEventListener("keyup", onsearchChange);
+            function onsearchChange(e)
+            {
+                var v = search.value;
+                if(v !== "")
+                {
+                    for(i = 0; i < mealContainer.children.length; i++)
+                    {
+                        var currentItem = mealContainer.children[i];
+
+                        if(currentItem.classList.contains('d-none') && !currentItem.classList.contains('search-result'))
+                            return;
+                        var name = currentItem.dataset.name;
+                        var description = currentItem.dataset.description;
+
+                        console.log(name.includes(v), description.includes(v));
+
+                        if(name.includes(v) || description.includes(v))
+                        {
+                            if(!currentItem.classList.contains('d-none'))
+                            {
+                                currentItem.classList.add('search-result');
+                            }else if(currentItem.classList.contains('d-none') && currentItem.classList.contains('search-result'))
+                            {
+                                if(currentItem.dataset.catid === subcat.value || subcat.value == -1)
+                                    currentItem.classList.remove('d-none');
+                            }
+
+                        }else{
+                            if(!currentItem.classList.contains('d-none'))
+                            {
+                                currentItem.classList.add('search-result');
+                                currentItem.classList.add('d-none');
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    for(i = 0; i < mealContainer.children.length; i++)
+                    {
+                        var currentItem = mealContainer.children[i];
+                        if(currentItem.classList.contains('search-result'))
+                        {
+                            currentItem.classList.remove('search-result');
+                            currentItem.classList.remove('d-none');
+                        }
+                    }
+                }
+            };
+
+        </script>
+    </div>

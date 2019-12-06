@@ -1,85 +1,138 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\Category;
 use App\Form\CategoryType;
 use App\Repository\CategoryRepository;
+use App\Repository\ImageRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/category")
+ * @Route("/admin/category")
  */
 class CategoryController extends AbstractController
 {
     /**
      * @Route("/", name="category_index", methods={"GET"})
+     * @param CategoryRepository $categoryRepository
+     * @return Response
      */
     public function index(CategoryRepository $categoryRepository): Response
     {
-        return $this->render('category/index.html.twig', [
+        return $this->render('admin/category/index.html.twig', [
             'categories' => $categoryRepository->findAll(),
         ]);
     }
 
     /**
      * @Route("/new", name="category_new", methods={"GET","POST"})
+     * @param Request $request
+     * @param CategoryRepository $categoryRepository
+     * @return Response
      */
-    public function new(Request $request): Response
+    public function new(Request $request, CategoryRepository $categoryRepository, ImageRepository $imageRepository): Response
     {
         $category = new Category();
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() ) {
+
+            $file = $form['image']->getData();
+//            $this->logger->info('Before Getting File');
+//            if($file)
+//            {
+////                die("nothing");
+////                $this->logger->info('there is file');
+//                $fileName = pathinfo($file->getClientOriginalName(),PATHINFO_FILENAME);
+//                $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $fileName);
+//                $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+//                // Move the file to the directory where brochures are stored
+//                try {
+//                    $file->move(
+//                        $this->getParameter('AdminUploadedImages'),
+//                        $newFilename
+//                    );
+//                } catch (FileException $e) {
+//                    // ... handle exception if something happens during file upload
+//                }
+//
+//                $category->setImage($newFilename);
+//            }
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($category);
             $entityManager->flush();
 
+
             return $this->redirectToRoute('category_index');
         }
-
-        return $this->render('category/new.html.twig', [
+        $mainCategoryList = $categoryRepository->findBy(['parentid' => null]);
+        return $this->render('admin/category/new.html.twig', [
             'category' => $category,
             'form' => $form->createView(),
+            'mainCategoryList' => $mainCategoryList,
+            'images' => $imageRepository->findAll(),
         ]);
     }
 
     /**
      * @Route("/{id}", name="category_show", methods={"GET"})
+     * @param Category $category
+     * @return Response
      */
     public function show(Category $category): Response
     {
-        return $this->render('category/show.html.twig', [
+        return $this->render('admin/category/show.html.twig', [
             'category' => $category,
         ]);
     }
 
     /**
      * @Route("/{id}/edit", name="category_edit", methods={"GET","POST"})
+     * @param Request $request
+     * @param Category $category
+     * @param CategoryRepository $categoryRepository
+     * @param ImageRepository $imageRepository
+     * @return Response
      */
-    public function edit(Request $request, Category $category): Response
+    public function edit(Request $request, Category $category, CategoryRepository $categoryRepository, ImageRepository $imageRepository): Response
     {
+        dump($category);
+//        die();
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+//        $category->setImage($imageRepository->findOneBy(['id'=> (int)$form->getData('image')]));
+
+        if ($form->isSubmitted()) {
+            $img = $imageRepository->findOneBy(['id'=> $request->request->get('category')['image']]);
+            $pcat = $categoryRepository->findOneBy(['id'=> $request->request->get('category')['parentid']]);
+            $category->setImage($img);
+            $category->setParentid($pcat);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($category);
+            $em->flush();
 
             return $this->redirectToRoute('category_index');
         }
-
-        return $this->render('category/edit.html.twig', [
+        $mainCategoryList = $categoryRepository->findBy(['parentid' => null]);
+        return $this->render('admin/category/edit.html.twig', [
             'category' => $category,
             'form' => $form->createView(),
+            'mainCategoryList' => $mainCategoryList,
+            'images' => $imageRepository->findAll(),
         ]);
     }
 
     /**
      * @Route("/{id}", name="category_delete", methods={"DELETE"})
+     * @param Request $request
+     * @param Category $category
+     * @return Response
      */
     public function delete(Request $request, Category $category): Response
     {

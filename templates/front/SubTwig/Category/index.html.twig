@@ -1,0 +1,100 @@
+{% extends 'front/SubTwig/front.base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block body %}
+    <div class="" style="height: 100px; width: 100%"></div>
+    <script>
+        function ShowSubCategories(e) {
+            console.log(e.nextElementSibling);
+            if (e.nextElementSibling.classList.contains('d-none')) {
+                e.nextElementSibling.classList.remove('d-none')
+            } else {
+                e.nextElementSibling.classList.add('d-none');
+            }
+        }
+    </script>
+    <div class="container">
+        <div class="row">
+            <div class="col col-lg-3 col-md-3 col-sm-12">
+{#                <h3 class="">All Categories</h3>#}
+{#                <br>#}
+                {% for category in categories %}
+                    {% if category.parentid == null %}
+                        <div class="py-1 px-3 border">
+                            <h5 class="py-1 text-dark" id="text-hello" onclick="ShowSubCategories(this)"
+                                style="cursor: pointer;">{{ category.name }} <small class="float-right"><i
+                                            class="fa fa-arrow-down"></i></small></h5>
+
+                            <div class="row d-none">
+                                <div class="col col-lg-9 col-md-9 col-sm-12 align-middle py-1 ">
+                                    <ul>
+                                        {% for subCat in categories %}
+                                            {% if subCat.parentid is not null %}
+                                                {% if subCat.parentid.id == category.id %}
+                                                    <a href="{{ path('front.meal-category') }}?subid={{ subCat.id }}">
+                                                        <li class=""><h6 class="py-1 px-2">{{ subCat.name }}</h6></li>
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+            </div>
+            <div class="col col-lg-9 col-md-9 col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="px-3 py-1">All Categories</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="container">
+                            <div class="row justify-content-around" id="mealContainer">
+                                {% set break = false %}
+                                {% set lt = listLimit ? listLimit : 6 %}
+                                {% for food in foods if not break %}
+                                {% if showAllMenu == false and loop.index == lt %}
+                                    {% set break = true %}
+                                {% endif %}
+                                <div class="card col-lg-3 col-md-5 col-sm-12 m-1 p-0"
+                                     data-catid="{{ food.category.id }}" data-id="{{ food.id }}"
+                                     data-name="{{ food.name }}" data-description="{{ food.description }}"
+                                     data-price="{{ food.price }}">
+                                    <a href="{{ path('front.food-detail', {'id' : food.id}) }}">
+                                        <img src="{{ asset('Upload/Images/') }}/{{ food.image.location }}"
+                                             class="card-img-top"
+                                             alt="..." style="object-fit: cover;">
+                                        <div class="card-body">
+                                            <h6 class="card-title title">{{ food.name }}
+                                                <span class="badge badge-dark price"><i
+                                                            class="fa fa-dollar"></i> {{ food.price }}</span>
+                                            </h6>
+
+
+{#                                            <p class="card-text text-truncate description">{{ food.description }}</p>#}
+                                    </a>
+
+                                    <a href="#" class="btn btn-primary btn-sm float-right">Order</a>
+                                    <a href="#" class="btn btn-outline-secondary btn-sm float-left"><i
+                                                class="fa fa-shopping-cart"></i> Add To Cart</a>
+                                </div>
+                            </div>
+                            {% else %}
+                                <div class="">
+{#                                    <img src="{{ asset('assets/front/images/sad.png') }}" alt="" width="100" height="100px">#}
+{#                                    <br><br>#}
+                                    <h5 class="col col-lg-12 p-3">There is no meal in this category.</h5>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

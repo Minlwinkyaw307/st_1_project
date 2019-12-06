@@ -1,4 +1,115 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+{#{% form_theme form 'bootstrap_4_layout.html.twig' %}#}
+
+{#{{ form_start(form) }}#}
+{#    {{ form_widget(form) }}#}
+{#    <button class="btn">{{ button_label | default('Save') }}</button>#}
+{#{{ form_end(form) }}#}
+
+
+<form action="" name="category" method="post" enctype="multipart/form-data" class="form-horizontal">
+    {#                parentID#}
+    <div class="row form-group">
+        <div class="col col-md-3">
+            <label for="mainCategory" class=" form-control-label">Main Category</label>
+        </div>
+        <div class="col-12 col-md-9">
+            <select id="select" class="form-control" name="category[parentid]" >
+                <option value="0">Main Category</option>
+                {% for cat in mainCategoryList %}
+                    {% if cat.id != category.id %}
+                    <option value="{{ cat.id }}" {{ cat.id == (category.parentid ? category.parentid.id : "-1") ? "selected" : ""}}>{{ cat.name }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <small class="form-text text-muted">Please Select Main Category For this.</small>
+        </div>
+    </div>
+
+    {#                Category Name#}
+    <div class="row form-group">
+        <div class="col col-md-3">
+            <label for="" class=" form-control-label" >Category Name</label>
+        </div>
+        <div class="col-12 col-md-9">
+            <input value="{{ category.name ? category.name }}" type="text" id="email-input" name="category[name]" placeholder="Name of the Category"
+                   class="form-control">
+            <small class="help-block form-text">Eg,. Fast Food, Dessert,...</small>
+        </div>
+    </div>
+
+    {#                Keyword#}
+    <div class="row form-group">
+        <div class="col col-md-3">
+            <label for="textarea-input" class=" form-control-label">Keyword</label>
+        </div>
+        <div class="col-12 col-md-9">
+            <textarea name="category[keywords]" id="textarea-input" rows="3" placeholder="Keywords For this Category"
+                      class="form-control">{{ category.keywords ? category.keywords }}</textarea>
+            <small class="help-block form-text">Eg,. Sweet, Fried, Potato,.. (Please use coma)</small>
+        </div>
+    </div>
+
+    {#                Description#}
+    <div class="row form-group">
+        <div class="col col-md-3">
+            <label for="textarea-input" class=" form-control-label">description</label>
+        </div>
+        <div class="col-12 col-md-9">
+            <textarea name="category[description]" id="textarea-input" rows="3" placeholder="Description for this Category"
+                      class="form-control">{{ category.description ? category.description }}</textarea>
+            <small class="help-block form-text">Description of the Category</small>
+        </div>
+    </div>
+
+    {#                Image#}
+    {#    Image URL#}
+    <div class="row form-group">
+        <div class="col col-md-3">
+            <label for="file-input" class=" form-control-label">Category's Image</label>
+        </div>
+        <div class="col-12 col-md-9">
+            {#            <input type="text" id="image-id" name="food[image]" class="form-control" value="{{ food.image ? food.image }}">#}
+            <select name="category[image]" id="categoryImageForm" class="form-control">
+                {% for img in images %}
+                    <option value="{{ img.id }}" data-url="{{ img.location }}" {{ category.image ? (category.image.id == img.id ? "selected" : "") : "" }}>{{ img }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            {% if category.image != NULL %}
+            <img src="{{ asset('Upload/Images/') }}/{{ category.image.location }}" alt="" id="categoryImage"  style="object-fit: cover; width: 100%; height: 150px">
+            {% else %}
+            <img src="{{ asset('Upload/Images/amirali-mirhashemian-pucP6jZSyV4-unsplash-5dd99b59785ab.jpeg') }}" alt="" id="categoryImage" style="object-fit: cover; width: 100%; height: 150px">
+            {% endif %}
+            <script>
+                let catImgForm = document.getElementById('categoryImageForm');
+                let catImg = document.getElementById('categoryImage');
+                catImgForm.onchange = function(e)
+                {
+                    let imgurl = catImgForm.options[catImgForm.selectedIndex].dataset.url;
+                    catImg.src = "{{ asset("Upload/Images/") }}/" + imgurl;
+
+                    console.log("{{ asset("Upload/Images/") }}/" + imgurl)
+
+                };
+            </script>
+        </div>
+
+    </div>
+
+    {#                Status#}
+    <div class="row form-group">
+        <div class="col col-md-3">
+            <label for="select" class=" form-control-label">Status</label>
+        </div>
+        <div class="col-12 col-md-9">
+            <select class="form-control" name="category[status]">
+                <option value="Unpublished" {{ category.status ==  "Unpublished" ? "selected" : ""}}>Unpublished</option>
+                <option value="Published" {{ category.status ==  "Published" ? "selected" : ""}}>Published</option>
+            </select>
+        </div>
+    </div>
+
+
+
+
+

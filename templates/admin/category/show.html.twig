@@ -1,54 +1,129 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/SubTwig/base.html.twig' %}
 
 {% block title %}Category{% endblock %}
 
 {% block body %}
-    <h1>Category</h1>
+    <div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <h1 style="display: inline-block">{{category.name}} </h1>
+            <sup class="badge badge-secondary">{{ category.status }}</sup>
+            <a href="{{ path('category_index') }}" class="btn btn-dark btn-sm float-right">
+                <i class="fa fa-arrow-left"></i> back to list
+            </a>
+            <br>
+            <span class="badge badge-primary">
+                {%  if category.parentid == "0" %}
+                Main Category
+                {% else %}
+                    Sub Category
+                {% endif %}
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ category.id }}</td>
-            </tr>
-            <tr>
-                <th>Parentid</th>
-                <td>{{ category.parentid }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ category.name }}</td>
-            </tr>
-            <tr>
-                <th>Keywords</th>
-                <td>{{ category.keywords }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ category.description }}</td>
-            </tr>
-            <tr>
-                <th>Image</th>
-                <td>{{ category.image }}</td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td>{{ category.status }}</td>
-            </tr>
-            <tr>
-                <th>Created_at</th>
-                <td>{{ category.createdAt ? category.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Updated_at</th>
-                <td>{{ category.updatedAt ? category.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+            </span>
+            <small><i class="fa fa-calendar-times mx-1"></i>{{ category.createdAt ? category.updatedAt|date('Y-m-d H:i:s') : ''}}</small>
+        </div>
+        <div class="card-body">
+            <div class="col-md-12">
+                <div class="table-responsive m-b-40">
+                    <table class="table table-bordered table-data3">
+                        <tbody>
+                        <tr>
+                            <th class="bg-dark text-white">Id</th>
+                            <td>{{ category.id }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-dark text-white">Status</th>
+                            <td>{{ category.status }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-dark text-white">Main Category</th>
+                            {% if category.parentid == NULL %}
+                            <td>Main Category</td>
+                            {% else %}
+                            <td>{{ category.parentid.name }}</td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <th class="bg-dark text-white">Name</th>
+                            <td>{{ category.name }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-dark text-white">Keywords</th>
+                            <td>{{ category.keywords }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-dark text-white">Description</th>
+                            <td>{{ category.description }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-dark text-white">Image</th>
+                            <td><img src="{{ asset('Upload/Images/') }}/{{ category.image.location }}" alt="" style="object-fit: cover; height: 150px ; width: 100%"></td>
+                        </tr>
+                        <tr>
+                            <th class="bg-dark text-white">Created At</th>
+                            <td>{{ category.createdAt ? category.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th class="bg-dark text-white">Updated At</th>
+                            <td>{{ category.updatedAt ? category.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
 
-    <a href="{{ path('category_index') }}">back to list</a>
+        <a href="{{ path('category_edit', {'id': category.id}) }}" class="btn btn-primary float-right">edit</a>
+        {{ include('admin/category/_delete_form.html.twig') }}
+        </div>
+    </div>
+    </div>
 
-    <a href="{{ path('category_edit', {'id': category.id}) }}">edit</a>
 
-    {{ include('category/_delete_form.html.twig') }}
+
+
+
+{#    <table class="table">#}
+{#        <tbody>#}
+{#            <tr>#}
+{#                <th>Id</th>#}
+{#                <td>{{ category.id }}</td>#}
+{#            </tr>#}
+{#            <tr>#}
+{#                <th>Parentid</th>#}
+{#                <td>{{ category.parentid }}</td>#}
+{#            </tr>#}
+{#            <tr>#}
+{#                <th>Name</th>#}
+{#                <td>{{ category.name }}</td>#}
+{#            </tr>#}
+{#            <tr>#}
+{#                <th>Keywords</th>#}
+{#                <td>{{ category.keywords }}</td>#}
+{#            </tr>#}
+{#            <tr>#}
+{#                <th>Description</th>#}
+{#                <td>{{ category.description }}</td>#}
+{#            </tr>#}
+{#            <tr>#}
+{#                <th>Image</th>#}
+{#                <td>{{ category.image }}</td>#}
+{#            </tr>#}
+{#            <tr>#}
+{#                <th>Status</th>#}
+{#                <td>{{ category.status }}</td>#}
+{#            </tr>#}
+{#            <tr>#}
+{#                <th>Created_at</th>#}
+{#                <td>{{ category.createdAt ? category.createdAt|date('Y-m-d H:i:s') : '' }}</td>#}
+{#            </tr>#}
+{#            <tr>#}
+{#                <th>Updated_at</th>#}
+{#                <td>{{ category.updatedAt ? category.updatedAt|date('Y-m-d H:i:s') : '' }}</td>#}
+{#            </tr>#}
+{#        </tbody>#}
+{#    </table>#}
+
+
 {% endblock %}

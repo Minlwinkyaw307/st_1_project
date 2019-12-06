@@ -1,11 +1,31 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/SubTwig/base.html.twig' %}
 
 {% block title %}New Category{% endblock %}
 
 {% block body %}
-    <h1>Create new Category</h1>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>New Category</strong>
+                <a href="{{ path('category_index') }}" class="btn btn-danger btn-sm float-right">
+                    <i class="fa fa-arrow-left"></i> Back To List
+                </a>
+            </div>
+            <div class="card-body card-block">
+                {% include 'admin/category/_form.html.twig' with {'postUrl' : path('category_new') } %}
+            </div>
 
-    {{ include('category/_form.html.twig') }}
 
-    <a href="{{ path('category_index') }}">back to list</a>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary btn-sm float-right">
+                    <i class="fa fa-dot-circle-o"></i> Submit
+                </button>
+                </form>
+                <a href="{{ path('category_index') }}" class="btn btn-danger btn-sm float-left">
+                    <i class="fa fa-arrow-left"></i> Back To List
+                </a>
+            </div>
+        </div>
+    </div>
+    {#    <a href="{{ path('category_index') }}">back to list</a>#}
 {% endblock %}
