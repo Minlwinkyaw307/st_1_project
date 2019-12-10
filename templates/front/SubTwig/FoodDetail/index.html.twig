@@ -3,7 +3,18 @@
 {% block title %}{{ title }}{% endblock %}
 {% block body %}
     <div class="" style="height: 100px; width: 100%">
-
+        <script>
+            function addToCartOne(foodid, uid, amount)
+            {
+                $.post('{{ path('front.cart_add') }}',{
+                    'fid' : foodid,
+                    'amount': 1,
+                    'uid' : uid
+                }, function(data, status){
+                    alert(JSON.parse(data)['result'])
+                });
+            }
+        </script>
     </div>
     <div class="container">
         <div class="row">
@@ -28,21 +39,77 @@
                                 </div>
                             </div>
                             <br>
-                            <a href="" class="btn btn-outline-secondary m-r-5"><i class="fa fa-shopping-cart"></i>Add To Cart</a>
-                            <span class="px-1"></span>
-                            <a href="" class="btn btn-primary m-l-5">Order</a>
+                            {% if app.user %}
+                                <a onclick="confirmOrder({{ food.id }})" class="btn btn-primary btn-sm float-right text-white">Order</a>
+                                <button class="btn btn-outline-secondary btn-sm float-left" onclick="addToCartOne({{ food.id }}, {{ app.user.id }}, '{{ food.name }}')"><i
+                                            class="fa fa-shopping-cart"></i> Add To Cart</button>
+                            {% else %}
+                                <div class="col lg-12">
+                                    <a href="{{ path('app_login') }}" class="btn btn-outline-primary">Sign In To Order</a>
+                                </div>
+                            {% endif %}
+                            <div style="clear: left;"></div>
                             <hr>
                             <br>
                             <p class="text-dark text-capitalize">{{ food.description }} Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio ducimus eos esse est, facilis quas quis recusandae sequi. Aliquam aut debitis enim eum fugit iure non provident quam quos repudiandae!</p>
                         </div>
                     </div>
                 </div>
+                <script>
+                    function addToCartOne(foodid, uid, name)
+                    {
+                        var amount = document.getElementById('amount').value;
+                        $.get('{{ path('front.cart_add') }}?fid='+ foodid +'&amount='+ amount +'&uid=' + uid,
+                            function(data, status){
+                                if(data['result'] === true )
+                                {
+                                    alert(name + " has been added to cart");
+                                    var cartAmount = document.getElementById('cart-amount');
+                                    if(cartAmount)
+                                    {
+                                        cartAmount.innerText = parseInt(cartAmount.innerText) + 1;
+                                    }
+                                }else{
+                                    alert("Couldn't add " + name + " to cart. Please try again.");
+                                }
+                            });
+                    }
+
+                    function confirmOrder(foodid) {
+                        var amount = document.getElementById('amount').value;
+                        window.location.href = '{{ path('front.user-confirm-order') }}?fids=' + foodid +'&amt=' + amount;
+                    }
+                </script>
+
                 <div class="card-footer">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum iste quibusdam voluptates. Asperiores cumque dignissimos dolores, earum eligendi ex illo inventore ipsa iusto minus nemo numquam quae recusandae tenetur totam!</p>
+                    <div class="container">
+                        <div>
+                            <form action="{{ path('front.comment_new') }}" method="post" class="" name="comment">
+                                <label for="">Please Enter You Comment</label>
+                                <input type="text" hidden name="comment[product]" value="{{ foodid }}">
+                                <textarea name="comment[comment]" class="ckeditor form-control"  id="" cols="" rows="2"></textarea>
+                                <br>
+                                <input type="submit" value="Done" class="btn btn-primary">
+                            </form>
+                        </div>
+                        <br>
+                        <div>
+                            {% for comment in comments %}
+                            <div class="list-group-item list-group-item-action my-1">
+                                <h5 class="">{{ comment.commentedBy.username }} <small class="badge badge-dark">{{ comment.commentedAt |date("m/d/Y")}}</small></h5>
+                                <br>
+                                <p class="text-dark text-">{{ comment.comment | raw}}</p>
+                                <br>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
             </div>
 
         </div>
     </div>
-
+    <div class="" style="height: 100px; width: 100%">
+        <br><br>
+    {% include ('front/SubTwig/front.footer.html.twig') %}
 {% endblock %}

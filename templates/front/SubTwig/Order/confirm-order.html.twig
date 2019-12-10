@@ -1,0 +1,130 @@
+{% extends 'front/SubTwig/front.base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block body %}
+    <div class="" style="height: 100px; width: 100%"></div>
+    <div class="container my-5">
+        <div class="row">
+            {% include('front/SubTwig/profile-nav.html.twig') %}
+            <div class="col col-lg-5 col-md-5 col-sm-12 my-2">
+                <h3 class="">List of Order</h3>
+                {% set total = 0 %}
+                <table class="table my-2">
+                    <tr>
+                        <th>Name</th>
+                        <th>Amount</th>
+                        <th>Price</th>
+                    </tr>
+                    {% for food in foods %}
+                        <tr>
+                            <td>{{food.name}}</td>
+                            {% set amt = 0 %}
+                            {% for amount in amounts %}
+                                {% if food.id == amount[0] %}
+                                    {% set amt = amount[1] %}
+                                {% endif %}
+                            {% endfor %}
+                            <td><i class="fa fa-dollar"></i> {{ food.price }} x {{ amt }}</td>
+                            <td><i class="fa fa-dollar"></i> {{ food.price * amt }}</td>
+                            {% set total = total + (food.price * amt) %}
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><h6 class="">Total : {{ total }}</h6></td>
+                    </tr>
+                </table>
+            <p>Credit Card Form is just a UI Design. Please Press Pay to Order.</p>
+
+            </div>
+            <div class="col col-lg-4 col-md-4 col-sm-12">
+                <div class="container">
+                    <div class="row ">
+                        <div class="col-xs-12 col-md-12 col-sm-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">
+                                        Payment Details
+                                    </h3>
+                                    <br>
+                                    <div class="checkbox pull-right">
+                                        <label>
+                                            <input type="checkbox"/>
+                                            Remember
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <form role="form">
+                                        <div class="form-group">
+                                            <label for="cardNumber">
+                                                CARD NUMBER</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="cardNumber"
+                                                       placeholder="Valid Card Number"
+                                                       required autofocus/>
+                                                <span class="input-group-addon"><span
+                                                            class="glyphicon glyphicon-lock"></span></span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-8 col-md-8">
+                                                <div class="form-group">
+                                                    <label for="expityMonth">
+                                                        EXPIRY DATE</label> <br>
+                                                    <div class="col-xs-5 col-lg-5 pl-ziro d-inline-block">
+                                                        <input type="text" class="form-control" id="expityMonth"
+                                                               placeholder="MM" required/>
+                                                    </div>
+                                                    <div class="col-xs-5 col-lg-5 pl-ziro d-inline-block">
+                                                        <input type="text" class="form-control" id="expityYear"
+                                                               placeholder="YY" required/></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-4 col-md-4 pull-right">
+                                                <div class="form-group">
+                                                    <label for="cvCode">
+                                                        CV CODE</label>
+                                                    <input type="password" class="form-control" id="cvCode"
+                                                           placeholder="CV" required/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary col col-12 my-2"><span
+                                        class="float-left">Final Payment</span><span class="float-right"><i
+                                            class="fa fa-dollar"></i> {{ total }}</span></button>
+                            <br/>
+                            <a onclick="Pay()" class="btn btn-success btn-lg btn-block"
+                               role="button">Pay</a>
+                            <script>
+                                function Pay()
+                                {
+                                    $.post('{{ path('front.user-order') }}', {
+                                        'fids': '{{ fids }}',
+                                        'amt' : '{{ amount }}'
+                                    }, function(data, status)
+                                    {
+                                        console.log(status);
+                                        console.log(data);
+                                        window.location.href = "{{ path('front.user-order') }}";
+                                    });
+                                }
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+    </div>
+    <div class="" style="height: 25px; width: 100%"></div>
+
+    {% include 'front/SubTwig/front.footer.html.twig' %}
+{% endblock %}

@@ -1,4 +1,6 @@
     <div class="container my-5">
+        <h2 class="heading text-center mb-sm-5 mb-4">Recently Added Meals</h2>
+        <br><br>
         <div class="col-12">
             <div class="row p-x-5">
                 <div class="col-lg-4 col-md-4 col-sm-4 form-group">
@@ -72,26 +74,53 @@
                         {% endif %}
                         <div class="card col-lg-3 col-md-3 col-sm-12 m-3 p-0" data-catid="{{ food.category.id }}" data-id="{{ food.id }}"
                             data-name="{{ food.name }}" data-description="{{ food.description }}" data-price="{{ food.price }}">
-                            <a href="dafedf.html" >
+                            <a href="{{ path('front.food-detail', {'id': food.id}) }}" >
                             <img src="{{ asset('Upload/Images/') }}/{{ food.image.location }}" class="card-img-top"
-                                 alt="..." style="object-fit: cover;">
+                                 alt="..." style="object-fit: cover; height: 150px;">
                             <div class="card-body">
                                 <h5 class="card-title title">{{ food.name }}</h5>
                                 <span class="badge badge-dark price"><i class="fa fa-dollar"></i> {{ food.price }}</span>
 
                                 <p class="card-text text-truncate description">{{ food.description }}</p>
                             </a>
+                            <br>
+                            {% if app.user %}
+                            <a href="{{ path('front.user-confirm-order') }}?fids={{ food.id }}&amt=1" class="btn btn-primary btn-sm float-right">Order</a>
+                                <button class="btn btn-outline-secondary btn-sm float-left" onclick="addToCartOne({{ food.id }}, {{ app.user.id }}, '{{ food.name }}')"><i
+                                            class="fa fa-shopping-cart"></i> Add To Cart</button>
+                            {% else %}
+                                <div class="col lg-12">
+                                    <a href="{{ path('app_login') }}" class="btn btn-outline-primary float-right">Sign In To Order</a>
+                                </div>
+                                <div style="clear: left;"></div>
+                            {% endif %}
 
-                            <a href="#" class="btn btn-primary btn-sm float-right">Order</a>
-                                <a href="#" class="btn btn-outline-secondary btn-sm float-left"><i
-                                            class="fa fa-shopping-cart"></i> Add To Cart</a>
                             </div>
                         </div>
                 {% else %}
                     <p class="display-1">There is no Meal to list</p>
                 {% endfor %}
             </div>
-
+            <script>
+                function addToCartOne(foodid, uid, name)
+                {
+                    $.get('{{ path('front.cart_add') }}?fid='+ foodid +'&amount=1&uid=' + uid,
+                        function(data, status){
+                        console.log();
+                        if(data['result'] === true )
+                        {
+                            alert(name + " has been added to cart");
+                            var cartAmount = document.getElementById('cart-amount');
+                            if(cartAmount)
+                            {
+                                cartAmount.innerText = parseInt(cartAmount.innerText) + 1;
+                            }
+                        }else{
+                            alert("Couldn't add " + name + " to cart. Please try again.");
+                        }
+                    });
+                }
+            </script>
         </div>
         <script>
             const mealContainer = document.getElementById('mealContainer');
