@@ -1,0 +1,207 @@
+<!-- HEADER MOBILE-->
+<header class="header-mobile d-block d-lg-none">
+  <div class="header-mobile__bar">
+    <div class="container-fluid">
+      <div class="header-mobile-inner">
+        <a class="logo" href="{{ path('category_index')}}">
+          <img src= "{{ asset('assets/admin') }}/images/icon/logo.png" alt="CoolAdmin" />
+        </a>
+        <button class="hamburger hamburger--slider" type="button">
+                            <span class="hamburger-box">
+                                <span class="hamburger-inner"></span>
+                            </span>
+        </button>
+      </div>
+    </div>
+  </div>
+{#  <nav class="navbar-mobile">#}
+{#    <div class="container-fluid">#}
+{#      <ul class="navbar-mobile__list list-unstyl  ed">#}
+{#        <li class="has-sub">#}
+{#          <a class="js-arrow" href="#">#}
+{#            <i class="fas fa-tachometer-alt"></i>Dashboard</a>#}
+{#          <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/index.html">Dashboard 1</a>#}
+{#            </li>#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/index2.html">Dashboard 2</a>#}
+{#            </li>#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/index3.html">Dashboard 3</a>#}
+{#            </li>#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/index4.html">Dashboard 4</a>#}
+{#            </li>#}
+{#          </ul>#}
+{#        </li>#}
+{#        <li>#}
+{#          <a href=" {{ asset('assets/admin') }}/chart.html">#}
+{#            <i class="fas fa-chart-bar"></i>Charts</a>#}
+{#        </li>#}
+{#        <li>#}
+{#          <a href=" {{ asset('assets/admin') }}/table.html">#}
+{#            <i class="fas fa-table"></i>Tables</a>#}
+{#        </li>#}
+{#        <li>#}
+{#          <a href=" {{ asset('assets/admin') }}/form.html">#}
+{#            <i class="far fa-check-square"></i>Forms</a>#}
+{#        </li>#}
+{#        <li>#}
+{#          <a href=" {{ asset('assets/admin') }}/calendar.html">#}
+{#            <i class="fas fa-calendar-alt"></i>Calendar</a>#}
+{#        </li>#}
+{#        <li>#}
+{#          <a href=" {{ asset('assets/admin') }}/map.html">#}
+{#            <i class="fas fa-map-marker-alt"></i>Maps</a>#}
+{#        </li>#}
+{#        <li class="has-sub">#}
+{#          <a class="js-arrow" href=" {{ asset('assets/admin') }}/#">#}
+{#            <i class="fas fa-copy"></i>Pages</a>#}
+{#          <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/login.html">Login</a>#}
+{#            </li>#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/register.html">Register</a>#}
+{#            </li>#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/forget-pass.html">Forget Password</a>#}
+{#            </li>#}
+{#          </ul>#}
+{#        </li>#}
+{#        <li class="has-sub">#}
+{#          <a class="js-arrow" href=" {{ asset('assets/admin') }}/#">#}
+{#            <i class="fas fa-desktop"></i>UI Elements</a>#}
+{#          <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/button.html">Button</a>#}
+{#            </li>#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/badge.html">Badges</a>#}
+{#            </li>#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/tab.html">Tabs</a>#}
+{#            </li>#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/card.html">Cards</a>#}
+{#            </li>#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/alert.html">Alerts</a>#}
+{#            </li>#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/progress-bar.html">Progress Bars</a>#}
+{#            </li>#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/modal.html">Modals</a>#}
+{#            </li>#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/switch.html">Switchs</a>#}
+{#            </li>#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/grid.html">Grids</a>#}
+{#            </li>#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/fontawesome.html">Fontawesome Icon</a>#}
+{#            </li>#}
+{#            <li>#}
+{#              <a href=" {{ asset('assets/admin') }}/typo.html">Typography</a>#}
+{#            </li>#}
+{#          </ul>#}
+{#        </li>#}
+{#      </ul>#}
+{#    </div>#}
+{#  </nav>#}
+</header>
+<!-- END HEADER MOBILE-->
+
+<!-- MENU SIDEBAR-->
+<aside class="menu-sidebar d-none d-lg-block">
+  <div class="logo">
+    <a href= "{{ path('admin.')}}">
+      <img src= "{{ asset('assets/admin') }}/images/icon/logo.png" alt="Cool Admin" />
+    </a>
+  </div>
+  <div class="menu-sidebar__content js-scrollbar1">
+    <nav class="navbar-sidebar">
+      <ul class="list-unstyled navbar__list">
+        <li class="active has-sub">
+          <a class="js-arrow" href= "#">
+            <i class="fas fa-motorcycle"></i>Orders <span class="float-right"><i class="fa fa-angle-down"></i></span></a>
+          <ul class="list-unstyled navbar__sub-list js-sub-list">
+            <li>
+              <a href= "#">New Orders</a>
+            </li>
+            <li>
+              <a href= "#">In Process</a>
+            </li>
+            <li>
+              <a href= "#">Order History</a>
+            </li>
+          </ul>
+        </li><li class="has-sub">
+          <a class="js-arrow" href= "#">
+            <i class="fas fa-sitemap"></i>Food Cateogries <span class="float-right"><i class="fa fa-angle-down"></i></span></a>
+          <ul class="list-unstyled navbar__sub-list js-sub-list">
+            <li>
+              <a href= "{{ path('category_index') }}">All</a>
+            </li>
+            <li>
+              <a href= "#">Main Categories</a>
+            </li>
+            <li>
+              <a href= "#">Sub Categories</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href= "{{ path('food_index') }}">
+            <i class="fas fa-utensils"></i>Foods</a>
+        </li>
+
+        {#User#}
+        </li><li class="has-sub">
+          <a class="js-arrow" href= "#">
+            <i class="fas fa-users"></i>User <span class="float-right"><i class="fa fa-angle-down"></i></span></a>
+          <ul class="list-unstyled navbar__sub-list js-sub-list">
+            <li>
+              <a href= "#">Normal User</a>
+            </li>
+            <li>
+              <a href= "#">Admin</a>
+            </li>
+          </ul>
+        </li>
+
+        {#Messages#}
+        <li>
+          <a href= "#">
+            <i class="fas fa-inbox"></i>Messages</a>
+        </li>
+
+        {#Commentes#}
+        <li>
+          <a href= "#">
+            <i class="fas fa-comments"></i>Comments</a>
+        </li>
+        {#Home Page Setting#}
+        </li><li class="has-sub">
+          <a class="js-arrow" href= "#">
+            <i class="fas fa-users"></i>Home Page Setting <span class="float-right"><i class="fa fa-angle-down"></i></span></a>
+          <ul class="list-unstyled navbar__sub-list js-sub-list">
+            <li>
+              <a href= "{{ path('slider_index') }}">Slider</a>
+            </li>
+          </ul>
+        </li>
+
+        {#Settings#}
+        <li>
+          <a href= "#">
+            <i class="zmdi zmdi-settings"></i>Setting</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</aside>
+<!-- END MENU SIDEBAR-->

@@ -1,0 +1,33 @@
+{% extends 'admin/image/base.html.twig' %}
+{% block title %}New Image{% endblock %}
+
+{% block body %}
+    <div class="container my-2">
+
+    <div class="card">
+        <div class="card-header">
+            <strong>Select image to upload</strong>
+        </div>
+
+        <div class="card-body">
+            <form action="{{ path('image_new', {'id': id ? id : ''}) }}" method="post" enctype="multipart/form-data" class="form-horizontal"
+                  name="image">
+
+                {% if id %}
+                    <input type="number" class="" name="id" value="{{ id }}" hidden>
+                {% endif %}
+                <label for="title">Image Title</label>
+                <input type="text" name="image[title]" id="title" class="form-control">
+                <br>
+                <input type="file" name="image[location]" id="fileToUpload" class="form-control-file">
+        </div>
+
+        <div class="card-footer">
+                <input type="submit" value="Upload Image" name="submit" class="btn btn-primary btn-sm">
+                </form>
+        </div>
+    </div>
+    </div>
+
+
+{% endblock %}

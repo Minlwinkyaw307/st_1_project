@@ -1,0 +1,122 @@
+{#{{ form_start(form) }}#}
+{#    {{ form_widget(form) }}#}
+{#    <button class="btn">{{ button_label|default('Save') }}</button>#}
+{#{{ form_end(form) }}#}
+
+
+<form action="" name="food" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+
+    {#                food Name#}
+    <div class="row form-group">
+        <div class="col col-md-3">
+            <label for="name" class=" form-control-label">food Name</label>
+        </div>
+        <div class="col-12 col-md-9">
+            <input value="{{ food.name ? food.name }}" type="text" id="email-input" name="food[name]"
+                   placeholder="Name of the food"
+                   class="form-control">
+            <small class="help-block form-text">Eg,. Chicken Burger, Beef Burger,...</small>
+        </div>
+    </div>
+    {#    Category#}
+    <div class="row form-group">
+        <div class="col col-md-3">
+            <label for="category" class=" form-control-label">Category</label>
+        </div>
+        <div class="col-12 col-md-9">
+            {#            <input type="text" id="image-id" name="food[image]" class="form-control" value="{{ food.image ? food.image }}">#}
+            <select name="food[category]" id="category" class="form-control">
+                {% for category in categories %}
+                    {% if category.parentid %}
+                        <option value="{{ category.id }}" {{food.category ? (food.category.id == category.id ? "selected" : "") : "" }}>{{ category.name }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+
+    </div>
+
+    {#    Image URL#}
+    <div class="row form-group">
+        <div class="col col-md-3">
+            <label for="file-input" class=" form-control-label">food's Image</label>
+        </div>
+        <div class="col-12 col-md-9">
+            {#            <input type="text" id="image-id" name="food[image]" class="form-control" value="{{ food.image ? food.image }}">#}
+            <select name="food[image]" id="foodImageForm" value="{{ food.image }}" class="form-control">
+                {% for img in images %}
+                    <option value="{{ img.id }}" data-url="{{ img.location }}" {{food.image ? (food.image.id == img.id ? "selected" : "") : "" }}>{{ img }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            {% if food.image != NULL %}
+                <img src="{{ asset('Upload/Images/') }}/{{ food.image.location }}" alt="" id="foodImage"  style="object-fit: cover; width: 100%; height: 150px">
+            {% else %}
+                <img src="{{ asset('Upload/Images/amirali-mirhashemian-pucP6jZSyV4-unsplash-5dd99b59785ab.jpeg') }}" alt="" id="foodImage" style="object-fit: cover; width: 100%; height: 150px">
+            {% endif %}
+            <script>
+                let foodImgForm = document.getElementById('foodImageForm');
+                let foodImg = document.getElementById('foodImage');
+                foodImgForm.onchange = function(e)
+                {
+                    let imgurl = foodImgForm.options[foodImgForm.selectedIndex].dataset.url;
+                    foodImg.src = "{{ asset("Upload/Images/") }}/" + imgurl;
+
+                    {#console.log("{{ asset("Upload/Images/") }}/" + imgurl)#}
+
+                };
+            </script>
+        </div>
+
+    </div>
+
+    {#    Price#}
+    <div class="row form-group">
+        <div class="col col-md-3">
+            <label for="price" class=" form-control-label">food's Price</label>
+        </div>
+        <div class="col-12 col-md-9">
+            <input type="number" id="price" name="food[price]" class="form-control"
+                   value="{{ food.price ? food.price }}">
+        </div>
+    </div>
+
+
+    {#                Keyword#}
+    <div class="row form-group">
+        <div class="col col-md-3">
+            <label for="keywords" class=" form-control-label">Keyword</label>
+        </div>
+        <div class="col-12 col-md-9">
+            <textarea name="food[keywords]" id="keywords" rows="3" placeholder="Keywords For this food"
+                      class="form-control">{{ food.keywords ? food.keywords }}</textarea>
+            <small class="help-block form-text">Eg,. Sweet, Fried, Potato,.. (Please use coma)</small>
+        </div>
+    </div>
+
+    {#                Description#}
+    <div class="row form-group">
+        <div class="col col-md-3">
+            <label for="description" class=" form-control-label">description</label>
+        </div>
+        <div class="col-12 col-md-9">
+            <textarea name="food[description]" id="description" rows="3" placeholder="Description for this food"
+                      class="form-control">{{ food.description ? food.description }}</textarea>
+            <small class="help-block form-text">Description of the food</small>
+        </div>
+    </div>
+
+
+    {#    #}{#                Status#}
+    {#    <div class="row form-group">#}
+    {#        <div class="col col-md-3">#}
+    {#            <label for="select" class=" form-control-label">Status</label>#}
+    {#        </div>#}
+    {#        <div class="col-12 col-md-9">#}
+    {#            <select name="select" id="select" class="form-control" name="food[status]">#}
+    {#                <option value="Unpublished">Unpublished</option>#}
+    {#                <option value="Published">Published</option>#}
+    {#            </select>#}
+    {#        </div>#}
+{#    </div>#}

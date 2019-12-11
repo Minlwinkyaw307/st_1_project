@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Form\CategoryType;
 use App\Repository\CategoryRepository;
 use App\Repository\ImageRepository;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,26 +44,7 @@ class CategoryController extends AbstractController
         if ($form->isSubmitted() ) {
 
             $file = $form['image']->getData();
-//            $this->logger->info('Before Getting File');
-//            if($file)
-//            {
-////                die("nothing");
-////                $this->logger->info('there is file');
-//                $fileName = pathinfo($file->getClientOriginalName(),PATHINFO_FILENAME);
-//                $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $fileName);
-//                $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
-//                // Move the file to the directory where brochures are stored
-//                try {
-//                    $file->move(
-//                        $this->getParameter('AdminUploadedImages'),
-//                        $newFilename
-//                    );
-//                } catch (FileException $e) {
-//                    // ... handle exception if something happens during file upload
-//                }
-//
-//                $category->setImage($newFilename);
-//            }
+            $category->setCreatedAt(new DateTime());
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($category);
             $entityManager->flush();

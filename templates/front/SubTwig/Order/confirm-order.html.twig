@@ -15,19 +15,23 @@
                         <th>Amount</th>
                         <th>Price</th>
                     </tr>
-                    {% for food in foods %}
-                        <tr>
-                            <td>{{food.name}}</td>
-                            {% set amt = 0 %}
-                            {% for amount in amounts %}
-                                {% if food.id == amount[0] %}
-                                    {% set amt = amount[1] %}
-                                {% endif %}
-                            {% endfor %}
-                            <td><i class="fa fa-dollar"></i> {{ food.price }} x {{ amt }}</td>
-                            <td><i class="fa fa-dollar"></i> {{ food.price * amt }}</td>
-                            {% set total = total + (food.price * amt) %}
-                        </tr>
+                    {% for f in foodids %}
+                        {% set findex = loop.index %}
+                        {% for food in foods %}
+                            {% if food.id == f %}
+                                <tr>
+                                    <td>{{food.name}}</td>
+                                    {% if foodamount.key is defined %}
+                                        {% set amt = foodamount[findex] %}
+                                    {% else %}
+                                        {% set amt = foodamount[0] %}
+                                    {% endif %}
+                                    <td><i class="fa fa-dollar"></i> {{ food.price }} x {{ amt }}</td>
+                                    <td><i class="fa fa-dollar"></i> {{ food.price * amt }}</td>
+                                    {% set total = total + (food.price * amt) %}
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
                     {% endfor %}
                     <tr>
                         <td></td>

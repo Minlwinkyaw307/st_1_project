@@ -1,9 +1,26 @@
 <div class="col col-lg-3 col-md-3 col-sm-12">
+    <script>
+        function ShowSubCategories(e) {
+            console.log(e.nextElementSibling);
+            if (e.nextElementSibling.classList.contains('d-none')) {
+                e.nextElementSibling.classList.remove('d-none')
+            } else {
+                e.nextElementSibling.classList.add('d-none');
+            }
+        }
+    </script>
     <div class="py-1 px-3 border">
-        <a href="">
             <h6 class="py-1 " id="text-hello" onclick="ShowSubCategories(this)"
-                style="cursor: pointer;">Profile</h6>
-        </a>
+                style="cursor: pointer;">Profile <small class="float-right"><i
+                            class="fa fa-arrow-down"></i></small></h6>
+            <div class="row d-none">
+                <div class="col col-lg-9 col-md-9 col-sm-12 align-middle py-1 ">
+                    <ul>
+                        <a href=""><li class=""><h6 class="py-1 px-2">General</h6></li></a>
+                        <a href=""><li class=""><h6 class="py-1 px-2">Gallery</h6></li></a>
+                    </ul>
+                </div>
+            </div>
     </div>
     <div class="py-1 px-3 border">
         <a href="{{ path('front.user-order') }}">

@@ -1,0 +1,64 @@
+{#{{ form_start(form) }}#}
+{#    {{ form_widget(form) }}#}
+{#    <button class="btn">{{ button_label|default('Save') }}</button>#}
+{#{{ form_end(form) }}#}
+
+
+<form action="" name="category" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+
+    {#                Slider Title#}
+    <div class="row form-group">
+        <div class="col col-md-3">
+            <label for="title" class=" form-control-label" >Slider Title</label>
+        </div>
+        <div class="col-12 col-md-9">
+            <input value="{{ slider.title ? slider.title }}" type="text" id="title" name="slider[title]" placeholder="Title of the Slider"
+                   class="form-control">
+            <small class="help-block form-text">Eg,. Our Newest Discount, Hottest Order, ...</small>
+        </div>
+    </div>
+
+    {#                Content#}
+    <div class="row form-group">
+        <div class="col col-md-3">
+            <label for="content" class=" form-control-label">Content of the Slider</label>
+        </div>
+        <div class="col-12 col-md-9">
+            <textarea name="slider[content]" id="content" rows="3" placeholder="Keywords For this Category"
+                      class="form-control">{{ slider.content ? slider.content }}</textarea>
+            <small class="help-block form-text">Eg,. explain the title in a little detail.</small>
+        </div>
+    </div>
+
+    {#                Status#}
+    <div class="row form-group">
+        <div class="col col-md-3">
+            <label for="status" class=" form-control-label">Status</label>
+        </div>
+        <div class="col-12 col-md-9">
+            <select id="status" class="form-control" name="slider[status]">
+                <option value="1">Enabled</option>
+                <option value="0">Disabled</option>
+            </select>
+            <small class="form-text text-muted">Enabled to show in homepage, disabled to hide from home page</small>
+        </div>
+    </div>
+
+
+    {#    Image URL#}
+    <div class="row form-group">
+        <div class="col col-md-3">
+            <label for="file-input" class=" form-control-label">Slider's Image</label>
+        </div>
+        <div class="col-12 col-md-9">
+            {#            <input type="text" id="image-id" name="food[image]" class="form-control" value="{{ food.image ? food.image }}">#}
+            <select name="slider[image]" id="" value="{{ slider.image }}" class="form-control">
+                {% for img in images %}
+                    <option value="{{ img.id }}">
+                        {{ img }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>

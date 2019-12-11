@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Odr index{% endblock %}
+
+{% block body %}
+    <h1>Odr index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Ordered_at</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for odr in odrs %}
+            <tr>
+                <td>{{ odr.id }}</td>
+                <td>{{ odr.amount }}</td>
+                <td>{{ odr.status }}</td>
+                <td>{{ odr.orderedAt ? odr.orderedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('odr_show', {'id': odr.id}) }}">show</a>
+                    <a href="{{ path('odr_edit', {'id': odr.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('odr_new') }}">Create new</a>
+{% endblock %}

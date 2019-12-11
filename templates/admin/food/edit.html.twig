@@ -1,0 +1,31 @@
+{% extends 'admin/SubTwig/base.html.twig' %}
+
+{% block title %}Edit Food{% endblock %}
+
+{% block body %}
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Edit Food</strong>
+                <a class="btn btn-sm btn-dark float-right" href="{{ path('food_index') }}">
+                    <i class="fa fa-arrow-left"></i> back to list
+                </a>
+            </div>
+            <div class="card-body">
+                {{ include('admin/food/_form.html.twig', {'button_label': 'Update'}) }}
+
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn-sm btn btn-primary float-right">
+                    <i class="fa fa-edit"></i> Edit
+                </button>
+                </form>
+                {% include('admin/food/_delete_form.html.twig') with {'floatClass' : 'float-left'} %}
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% endblock %}

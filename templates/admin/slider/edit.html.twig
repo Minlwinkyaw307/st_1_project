@@ -1,0 +1,26 @@
+{% extends 'admin/SubTwig/base.html.twig' %}
+
+{% block title %}Edit Slider{% endblock %}
+
+{% block body %}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Edit Category</strong>
+            </div>
+            <div class="card-body">
+                {% include 'admin/slider/_form.html.twig' %}
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary btn-sm float-right">
+                    <i class="fa fa-dot-circle-o"></i> Submit
+                </button>
+                </form>
+                <a href="{{ path('slider_index') }}" class="btn btn-dark btn-sm float-left">
+                    <i class="fa fa-arrow-left"></i> Back To List
+                </a>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

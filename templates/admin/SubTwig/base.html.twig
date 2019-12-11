@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}{% endblock %}</title>
+    {% include 'admin/SubTwig/header.html.twig' %}
+    {% block stylesheets %}{% endblock %}
+</head>
+<body class="">
+    <div class="page-wrapper">
+
+        {% include 'admin/SubTwig/sidebar.html.twig' %}
+        <!-- PAGE CONTAINER-->
+        <div class="page-container">
+            {% include 'admin/SubTwig/navbar.html.twig' %}
+            <!-- MAIN CONTENT-->
+            <div class="main-content">
+                <div class="section__content section__content--p30">
+                    <div class="container-fluid">
+                        <div class="row">
+                            {% block body %}{% endblock %}
+                        </div>
+                        {% include 'admin/SubTwig/footer.html.twig' %}
+                    </div>
+                </div>
+            </div>
+            <!-- END MAIN CONTENT-->
+            <!-- END PAGE CONTAINER-->
+        </div>
+        {% include 'admin/SubTwig/javascript.html.twig' %}
+        {% block javascripts %}{% endblock %}
+    </div>
+{#</body>#}
+</html>

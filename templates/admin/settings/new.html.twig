@@ -1,0 +1,17 @@
+{% extends 'admin/SubTwig/base.html.twig' %}
+
+{% block title %}New Settings{% endblock %}
+
+{% block body %}
+
+        {{ include('admin/settings/_form.html.twig') }}
+        <div class="card-footer">
+            <button type="submit" class="btn btn-sm btn-primary float-right" >
+                <i class="fa fa-dot-circle"></i> &nbsp; Submit
+            </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
