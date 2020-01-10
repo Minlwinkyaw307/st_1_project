@@ -1,0 +1,43 @@
+{% extends 'admin/SubTwig/base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+<div class="col-md-12">
+    <div class="table-responsive m-b-40">
+        <table class="table table-borderless table-data3">
+
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Subject</th>
+                <th>Status</th>
+                <th>Show</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for message in messages %}
+            <tr>
+                <td>{{ message.id }}</td>
+                <td>{{ message.name }}</td>
+                <td>{{ message.email }}</td>
+                <td>{{ message.phone }}</td>
+                <td>{{ message.subject }}</td>
+                <td>{{ message.status }}</td>
+                <td>
+                    <a class="btn btn-sm btn-primary" href="{{ path('message_show', {'id': message.id}) }}">show</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+{% endblock %}
