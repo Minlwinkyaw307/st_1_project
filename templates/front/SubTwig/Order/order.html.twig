@@ -1,6 +1,7 @@
 {% extends 'front/SubTwig/front.base.html.twig' %}
-
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{title}}{% endblock %}
+{% block keywords %}{{ keywords ? keywords : setting.keywords }}{% endblock %}
+{% block description %}{{ description ? description : setting.description }}{% endblock %}
 {% block body %}
     <div class="" style="height: 100px; width: 100%"></div>
     <div class="container my-5">

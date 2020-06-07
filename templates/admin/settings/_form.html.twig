@@ -249,7 +249,7 @@
                             <label for="smtppassword" class=" form-control-label">SMTP Password</label>
                         </div>
                         <div class="col-12 col-md-9">
-                            <input value="{{ setting.smtppasw ? setting.smtppasw : "" }}" type="text" id="smtppassword" name="settings[smtppasw]"
+                            <input value="{{ setting.smtppasw ? setting.smtppasw : "" }}" type="password" id="smtppassword" name="settings[smtppasw]"
                                    placeholder=""
                                    class="form-control">
                             <small class="help-block form-text">SMTP Server of the Company</small>
@@ -275,7 +275,7 @@
                 <div class="tab-pane fade" id="references" role="tabpanel" aria-labelledby="references-tab">
                     <small class="help-block form-text m-b-3">All the Things (with the same format) that written here will be shown in <b>REFRENCES PAGE</b>.</small>
                     <br>
-                    <textarea name="settings[contact]" class="ckeditor" id="" cols="30" rows="10">{{ setting.contact ? setting.contact : '' }}</textarea>
+                    <textarea name="settings[referances]" class="ckeditor" id="" cols="30" rows="10">{{ setting.referances ? setting.referances : '' }}</textarea>
                 </div>
 
             </div>

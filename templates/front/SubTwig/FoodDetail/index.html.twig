@@ -1,6 +1,8 @@
 {% extends 'front/SubTwig/front.base.html.twig' %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{title}}{% endblock %}
+{% block keywords %}{{ keywords ? keywords : setting.keywords }}{% endblock %}
+{% block description %}{{ description ? description : setting.description }}{% endblock %}
 {% block body %}
     <div class="" style="height: 100px; width: 100%">
         <script>
@@ -22,8 +24,35 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-12">
-                            <img src="{{ asset('Upload/Images/') }}/{{ food.image.location }}" alt=""
-                                 style="object-fit: contain; height: 300px; width: 100%;">
+{#                            <img src="{{ asset('Upload/Images/') }}/{{ food.image.location }}" alt=""#}
+{#                                 style="object-fit: contain; height: 300px; width: 100%;">#}
+                            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                            {% for img in food.images %}
+                            <div class="carousel-item {{ loop.index == 1 ? "active" : "" }}">
+                                <div class="" style="background-color: rgba(0,0,0,1)">
+                                    <img style="object-fit: cover; height: 300px; width: 100%;" class="d-block w-100" src="{{ asset('Upload/Images')}}/{{ img.location }}" alt="First slide">
+                                </div>
+{#                                <div class="carousel-caption d-none d-md-block" style="background-color: rgba(0,0,0,0)">#}
+{#                                    <h4>{{slider.title}}</h4>#}
+{#                                    <p class="text-white">{{ slider.content }}</p>#}
+{#                                </div>#}
+                            </div>
+                            {% else %}
+                                <div class="" style="background-color: rgba(0,0,0,1)">
+                                    <img style="object-fit: cover; height: 300px; width: 100%;" class="d-block w-100" src="{{ asset('Upload/Images')}}/{{ food.image.location }}" alt="First slide">
+                                </div>
+                            {% endfor %}
+                                </div>
+                                <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                                <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <h1 class="display-4 text-capitalize">{{ food.name }}</h1>
@@ -85,10 +114,26 @@
                     <div class="container">
                         {% if app.user %}
                         <div>
+                            {% for message in app.flashes('success') %}
+                                <div class="alert alert-success">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
                             <form action="{{ path('front.comment_new') }}" method="post" class="" name="comment">
                                 <label for="">Please Enter You Comment</label>
                                 <input type="text" hidden name="comment[product]" value="{{ foodid }}">
-                                <textarea name="comment[comment]" class="ckeditor form-control"  id="" cols="" rows="2"></textarea>
+                                <div class="form-group">
+                                    <select name="comment[rate]" id="" class="form-control">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <textarea name="comment[comment]" class="ckeditor form-control"  id="" cols="" rows="2"></textarea>
+                                </div>
                                 <br>
                                 <input type="submit" value="Done" class="btn btn-primary">
                             </form>
@@ -100,11 +145,21 @@
                             </div>
                         {% endif %}
                         <div>
+                            <h2>Comments</h2>
+                            <hr>
                             {% for comment in comments %}
                             <div class="list-group-item list-group-item-action my-1">
-                                <h5 class="">{{ comment.commentedBy.username }} <small class="badge badge-dark">{{ comment.commentedAt |date("m/d/Y")}}</small></h5>
+                                <img style="width: 55px; height: 55px; object-fit: cover;" src="{{ asset('Upload/Images/' ~ app.user.profileImg.location) }}" alt="">
+                                <h5 class="d-inline-block" style="padding-left: 10px;">{{ comment.commentedBy.username }} <small class="badge badge-dark">{{ comment.commentedAt |date("m/d/Y")}}</small></h5>
                                 <br>
-                                <p class="text-dark text-">{{ comment.comment | raw}}</p>
+                                <div style="padding: 0px 65px;">
+                                    <p>
+                                        {% for i in range(1, comment.rate) %}
+                                            <i class="fa fa-star"></i>
+                                        {% endfor %}
+                                    </p>
+                                    <p class="text-dark px-4" style="padding-left: 50px">{{ comment.comment | raw}}</p>
+                                </div>
                                 <br>
                             </div>
                             {% endfor %}

@@ -36,6 +36,25 @@ class UserSecurityController extends AbstractController
     }
 
     /**
+     * @Route("/adminlogin", name="admin_login")
+     * @param AuthenticationUtils $authenticationUtils
+     * @return Response
+     */
+    public function adminlogin(AuthenticationUtils $authenticationUtils): Response
+    {
+        // if ($this->getUser()) {
+        //     return $this->redirectToRoute('target_path');
+        // }
+
+        // get the login error if there is one
+        $error = $authenticationUtils->getLastAuthenticationError();
+        // last username entered by the user
+        $lastUsername = $authenticationUtils->getLastUsername();
+
+        return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+    }
+
+    /**
      * @Route("/register", name="register_user", methods={"GET","POST"})
      * @param Request $request
      * @return Response
@@ -46,15 +65,10 @@ class UserSecurityController extends AbstractController
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
-        $pass = $request->request->get('category')['password'];
-        $repass = $request->request->get('repassword');
-
-
-
         if ($form->isSubmitted()) {
 
             $user = $form->getData();
-
+            $user->setRoles($request->request->get('user')['roles']);
             $pass = $request->request->get('user')['password'];
             $repass = $request->request->get('repassword');
             if($pass != $repass)

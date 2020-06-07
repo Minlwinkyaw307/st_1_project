@@ -1,6 +1,8 @@
 {% extends 'front/SubTwig/front.base.html.twig' %}
 
 {% block title %}{{title}}{% endblock %}
+{% block keywords %}{{ keywords ? keywords : setting.keywords }}{% endblock %}
+{% block description %}{{ description ? description : setting.description }}{% endblock %}
 {% block body %}
     {% include 'front/SubTwig/front.banner.html.twig' %}
     {% include 'front/SubTwig/menu.html.twig' %}

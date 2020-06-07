@@ -33,8 +33,29 @@ class Comment
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Food")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $product;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $status;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updated_at;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $rate;
+
+    /**
+     * @ORM\Column(type="string", length=30, nullable=true)
+     */
+    private $ip;
 
     public function getId(): ?int
     {
@@ -85,6 +106,54 @@ class Comment
     public function setProduct(?Food $product): self
     {
         $this->product = $product;
+
+        return $this;
+    }
+
+    public function getStatus(): ?bool
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?bool $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updated_at): self
+    {
+        $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getRate(): ?int
+    {
+        return $this->rate;
+    }
+
+    public function setRate(?int $rate): self
+    {
+        $this->rate = $rate;
+
+        return $this;
+    }
+
+    public function getIp(): ?string
+    {
+        return $this->ip;
+    }
+
+    public function setIp(?string $ip): self
+    {
+        $this->ip = $ip;
 
         return $this;
     }

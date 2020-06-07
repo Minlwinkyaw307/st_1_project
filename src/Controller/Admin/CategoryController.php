@@ -25,6 +25,31 @@ class CategoryController extends AbstractController
     public function index(CategoryRepository $categoryRepository): Response
     {
         return $this->render('admin/category/index.html.twig', [
+            'title' =>"All Categories",
+            'categories' => $categoryRepository->findAll(),
+        ]);
+    }
+    /**
+     * @Route("/main-categories", name="category_main_index", methods={"GET"})
+     * @param CategoryRepository $categoryRepository
+     * @return Response
+     */
+    public function mainCategoryIndex(CategoryRepository $categoryRepository): Response
+    {
+        return $this->render('admin/category/main-category.html.twig', [
+            'title' =>"Main Categories",
+            'categories' => $categoryRepository->findBy(['parentid' => null]),
+        ]);
+    }
+    /**
+     * @Route("/sub-categories", name="category_sub_index", methods={"GET"})
+     * @param CategoryRepository $categoryRepository
+     * @return Response
+     */
+    public function subCategoryIndex(CategoryRepository $categoryRepository): Response
+    {
+        return $this->render('admin/category/sub-category.html.twig', [
+            'title' =>"Sub Categories",
             'categories' => $categoryRepository->findAll(),
         ]);
     }

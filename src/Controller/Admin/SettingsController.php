@@ -86,8 +86,8 @@ class SettingsController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->persist($setting);
             $em->flush();
-//            $this->getDoctrine()->getManager()->flush();
-//            return $this->redirectToRoute('settings_index');
+            $this->getDoctrine()->getManager()->flush();
+            return $this->redirectToRoute('settings_edit', ['id' => $setting->getId()]);
         }
 
         return $this->render('admin/settings/new.html.twig', [

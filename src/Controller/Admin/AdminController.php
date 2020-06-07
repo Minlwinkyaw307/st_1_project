@@ -20,6 +20,7 @@ class AdminController extends AbstractController
      */
     public function index(CartRepository $cartRepository)
     {
+        return $this->redirectToRoute('category_index');
 
         return $this->render('admin/admin-index.html.twig', [
             'controller_name' => 'AdminController',

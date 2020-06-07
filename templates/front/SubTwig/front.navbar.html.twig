@@ -6,11 +6,11 @@
 				<ul class="d-lg-flex header-w3_pvt">
 					<li class="mr-lg-3">
 						<span class="fa fa-envelope-open"></span>
-						<a href="mailto:info@crispy.com" class="">info@crispy.com</a>
+						<a href="mailto:info@crispy.com" class="">{{ setting.email }}</a>
 					</li>
 					<li>
 						<span class="fa fa-phone"></span>
-						<p class="d-inline">Call Us +905051234567</p>
+						<p class="d-inline">Call Us {{ setting.tel }}</p>
 					</li>
 				</ul>
 			</div>
@@ -23,6 +23,10 @@
 					<li class="">
 						| <span class=""><span class="fas fa-clock"></span><a href="{{ path('logout') }}" style="color: dodgerblue;" ><u>Log Out</u></a></span>
 					</li>
+					{% else %}
+						<li class="">
+							| <span class=""><span class="fas fa-clock"></span><a href="{{ path('register_user') }}" style="color: dodgerblue;" ><u>Register</u></a></span>
+						</li>
 					{% endif %}
 
 
@@ -47,41 +51,60 @@
 			<ul class="menu mt-2 ml-auto">
 				<li class="active"><a href="{{ path('front.index') }}">Home</a></li>
 				<li class=""><a href="{{ path('front.aboutUs') }}">About Us</a></li>
-				<li class=""><a href="#">Services</a></li>
+				<li class=""><a href="{{ path('front.prefrences') }}">Prefrences</a></li>
 {#				<li class=""><a href="#">Our Meals</a></li>#}
 {#				<li class=""><a href="#">Gallery</a></li>#}
 {#				<li class=""><a href="#">Blog</a></li>#}
-				<li class=""><a href="#">Contact Us</a></li>
+				<li class=""><a href="{{ path('front.contactus') }}">Contact Us</a></li>
 				{% if app.user %}
+				<li class="">
+
+					<a href="{{ path('front.user-cart') }}" style="width: 15px; height: 15px;">
+						<div class="noti__item js-item-menu d-inline-block">
+							<i class="fa fa-shopping-cart"></i>
+							<span class="quantity" id="cart-amount">{{ cart_count }}</span>
+						</div>
+					</a>
+				</li>
+
 				{% else %}
 					<li class=""><a href="{{ path('app_login') }}">Sign In</a></li>
 				{% endif %}
 			</ul>
-
-			<div class="login-icon ml-2">
-				<a class="user" href="{{ path('front.meal-category') }}">Order Meals</a>
-			</div>
 			<div class="ml-2">
 				{% if app.user %}
-				<body>
-				<div class="container">
-					<div class="d-flex justify-content-center h-100">
-						<div class="image_outer_container">
-							<div class="green_icon"></div>
-							<div class="image_inner_container">
-								<a href="{{ path('front.user-cart') }}" style="">
-									<img src="https://i.pinimg.com/originals/43/96/61/439661dcc0d410d476d6d421b1812540.jpg">
-								</a>
+					<body>
+					<div class="container">
+						<div class="d-flex justify-content-center h-100">
+							<div class="image_outer_container">
+								<div class="green_icon"></div>
+								<div class="image_inner_container">
+									<a href="{{ path('front.user-general') }}" style="">
+										{% if app.user.profileImg %}
+										<img src="{{ asset('Upload/Images') }}/{{ app.user.profileImg.location }}">
+										{% else %}
+										<img src="{{ asset('Upload/Images/no-profile-pic-icon-5.jpg') }}">
+										{% endif %}
+
+									</a>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				</body>
+					</body>
 				{% endif %}
 			</div>
+			<div class="login-icon ml-2">
+				<a class="user" href="{{ path('front.meal-category') }}">Order Meals</a>
+			</div>
+
 		</nav>
 		<div class="clear"></div>
 		<!-- //nav -->
 	</div>
 </header>
 <!-- //header -->
+
+
+
+

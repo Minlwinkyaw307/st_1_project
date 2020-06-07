@@ -26,8 +26,12 @@
                                    value="{{ csrf_token('authenticate') }}">
                             {#username#}
                             <div class="form-group">
-                                <label>Username</label>
+                                <label>Name</label>
                                 <input class="au-input au-input--full" type="text" name="user[username]" placeholder="Username">
+                            </div>
+                            <div class="form-group">
+                                <label>Surname</label>
+                                <input class="au-input au-input--full" type="text" name="user[surname]" placeholder="Surname">
                             </div>
                             {#email address#}
                             <div class="form-group">
@@ -59,7 +63,7 @@
                         <div class="register-link">
                             <p>
                                 Already have account?
-                                <a href="#">Sign In</a>
+                                <a href="{{ path('app_login') }}">Sign In</a>
                             </p>
                         </div>
                     </div>

@@ -5,23 +5,29 @@ namespace App\Controller\Home;
 use App\Entity\Cart;
 use App\Entity\Comment;
 use App\Entity\Food;
+use App\Entity\Message;
 use App\Entity\Odr;
 use App\Entity\User;
 use App\Form\CommentType;
+use App\Form\MessageType;
+use App\Form\UserType;
 use App\Repository\CartRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\CommentRepository;
 use App\Repository\FoodRepository;
 use App\Repository\OdrRepository;
-use App\Repository\OrderRepository;
+use App\Repository\SettingsRepository;
 use App\Repository\SliderRepository;
 use App\Repository\UserRepository;
 use DateTime;
-use http\Env\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\Bridge\Google\Smtp\GmailTransport;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 
@@ -39,7 +45,7 @@ class FrontController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function index(CartRepository $cartRepository ,SliderRepository $sliderRepository, CategoryRepository $categoryRepository, FoodRepository $foodRepository)
+    public function index(SettingsRepository $settingsRepository, CartRepository $cartRepository ,SliderRepository $sliderRepository, CategoryRepository $categoryRepository, FoodRepository $foodRepository)
     {
         $cart_count = 0;
         if($this->isGranted('ROLE_USER') || $this->isGranted('ROLE_ADMIN'))
@@ -55,6 +61,9 @@ class FrontController extends AbstractController
             'showAllMenu' => false,
             'listLimit' => 6,
             'cart_count' => $cart_count,
+            'setting' => $settingsRepository->findAll()[0],
+            'description' => $settingsRepository->findAll()[0]->getDescription(),
+            'keywords' => $settingsRepository->findAll()[0]->getKeywords(),
         ];
         return $this->render('front/index.html.twig',$transferValue);
     }
@@ -63,12 +72,101 @@ class FrontController extends AbstractController
     /**
      * @Route("/about", name="aboutUs")
      */
-    public function aboutUs()
+    public function aboutUs(CartRepository $cartRepository, SettingsRepository $settingsRepository)
     {
+        $cart_count = 0;
+        if($this->isGranted('ROLE_USER') || $this->isGranted('ROLE_ADMIN'))
+            $cart_count =  $cartRepository->createQueryBuilder('a')
+                ->select('count(a.id)')
+                ->getQuery()
+                ->getSingleScalarResult();
         $transferValue = [
-            'title' => 'Crispy | Home',
+            'title' => 'Crispy | About Us',
+            'cart_count' => $cart_count,
+            'setting' => $settingsRepository->findAll()[0],
+            'description' => $settingsRepository->findAll()[0]->getDescription(),
+            'keywords' => $settingsRepository->findAll()[0]->getKeywords(),
         ];
         return $this->render('front/front.aboutUs.html.twig',$transferValue);
+    }
+
+    /**
+     * @Route("/prefrences", name="prefrences")
+     * @param CartRepository $cartRepository
+     * @param SettingsRepository $settingsRepository
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function prefrences(CartRepository $cartRepository, SettingsRepository $settingsRepository)
+    {
+        $cart_count = 0;
+        if($this->isGranted('ROLE_USER') || $this->isGranted('ROLE_ADMIN'))
+            $cart_count =  $cartRepository->createQueryBuilder('a')
+                ->select('count(a.id)')
+                ->getQuery()
+                ->getSingleScalarResult();
+        $transferValue = [
+            'title' => 'Crispy | References',
+            'cart_count' => $cart_count,
+            'setting' => $settingsRepository->findAll()[0],
+            'description' => $settingsRepository->findAll()[0]->getDescription(),
+            'keywords' => $settingsRepository->findAll()[0]->getKeywords(),
+        ];
+        return $this->render('front/SubTwig/front.prefrences.html.twig',$transferValue);
+    }
+
+    /**
+     * @Route("/contactus", name="contactus")
+     * @param CartRepository $cartRepository
+     * @param SettingsRepository $settingsRepository
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     */
+    public function contactus(Request $request, CartRepository $cartRepository, SettingsRepository $settingsRepository)
+    {   $message = new Message();
+        $form = $this->createForm(MessageType::class, $message);
+        $form->handleRequest($request);
+        $setting = $settingsRepository->findAll()[0];
+        $cart_count = 0;
+        if($form->isSubmitted())
+        {
+            $message->setIp($_SERVER['REMOTE_ADDR']);
+            $message->setStatus("New");
+            $message->setCreatedAt(new DateTime());
+            $message->setUpdatedAt(new DateTime());
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($message);
+            $em->flush();
+            $email = (new Email())
+                ->from($setting->getSmtpemail())
+                ->to($message->getEmail())
+                ->subject("Cripsy Food Delivery | Your Request")
+                ->html('Dear'. $message->getName() . ',<br>'.
+                    "<p>We are really happy to recieve message from you</p>".
+                    "<p>We will evaluate your message as soon as possilbe</p>".
+                    "<p>Much Love From Cripsy Food Delivery</p>"
+                );
+            $transport = new GmailTransport($setting->getSmtpemail(), $setting->getSmtppasw());
+            $mailer = new Mailer($transport);
+            $sentEmail = $mailer->send($email);
+            $this->addFlash('success', "You Message Has Been Sent. Please Check Your E-mail To Confirm.");
+            return $this->redirectToRoute('front.contactus');
+        }
+        if($this->isGranted('ROLE_USER') || $this->isGranted('ROLE_ADMIN'))
+            $cart_count =  $cartRepository->createQueryBuilder('a')
+                ->select('count(a.id)')
+                ->getQuery()
+                ->getSingleScalarResult();
+        $transferValue = [
+            'title' => 'Crispy | Contact Us',
+            'cart_count' => $cart_count,
+            'setting' => $setting,
+            'form' => $form->createView(),
+            'description' => $settingsRepository->findAll()[0]->getDescription(),
+            'keywords' => $settingsRepository->findAll()[0]->getKeywords(),
+        ];
+        return $this->render('front/SubTwig/front.contactus.html.twig',$transferValue);
     }
 
     /**
@@ -79,7 +177,7 @@ class FrontController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function foodDetail(Request $request, Food $food, $id, CartRepository $cartRepository, CommentRepository $commentRepository)
+    public function foodDetail(SettingsRepository $settingsRepository,Request $request, Food $food, $id, CartRepository $cartRepository, CommentRepository $commentRepository)
     {
         $cart_count = 0;
         if($this->isGranted('ROLE_USER') || $this->isGranted('ROLE_ADMIN'))
@@ -88,11 +186,14 @@ class FrontController extends AbstractController
                 ->getQuery()
                 ->getSingleScalarResult();
         $transferValue = [
-            'title' => 'Crispy | Home',
+            'title' => $food->getName(),
+            'keywords' => $food->getKeywords(),
+            'description' => $food->getDescription(),
             'food' => $food,
             'cart_count' => $cart_count,
             'foodid' => $id,
             'comments' => $commentRepository->findBy(['product' => $food]),
+            'setting' => $settingsRepository->findAll()[0],
         ];
         return $this->render('front/SubTwig/FoodDetail/index.html.twig', $transferValue);
 //        return $this->render()
@@ -119,9 +220,11 @@ class FrontController extends AbstractController
      * @param Request $request
      * @param CategoryRepository $categoryRepository
      * @param FoodRepository $foodRepository
+     * @param CartRepository $cartRepository
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function frontCategory(Request $request, CategoryRepository $categoryRepository, FoodRepository $foodRepository)
+    public function frontCategory(SettingsRepository $settingsRepository, Request $request, CategoryRepository $categoryRepository, FoodRepository $foodRepository, CartRepository $cartRepository)
     {
         $food = null;
         $subid = $request->query->get('subid');
@@ -129,13 +232,22 @@ class FrontController extends AbstractController
             $food = $foodRepository->findAll();
         else
             $food = $foodRepository->findBy(['category' => $subid]);
+        $cart_count = 0;
+        if($this->isGranted('ROLE_USER') || $this->isGranted('ROLE_ADMIN'))
+            $cart_count =  $cartRepository->createQueryBuilder('a')
+                ->select('count(a.id)')
+                ->getQuery()
+                ->getSingleScalarResult();
         $transferValue = [
-            'title' => 'Crispy | Home',
+            'title' => 'Crispy | Categories',
             'categories' => $categoryRepository->findAll(),
             'foods' => $food,
             'showAllMenu' => true,
             'listLimit' => 6,
-            ''
+            'cart_count' => $cart_count,
+            'setting' => $settingsRepository->findAll()[0],
+            'description' => $settingsRepository->findAll()[0]->getDescription(),
+            'keywords' => $settingsRepository->findAll()[0]->getKeywords(),
         ];
         return $this->render('front/SubTwig/Category/index.html.twig', $transferValue);
     }
@@ -143,7 +255,7 @@ class FrontController extends AbstractController
     /**
      * @Route("/profile/cart", name="user-cart")
      **/
-    public function userCart(Request $request, UserInterface $user, CartRepository $cartRepository)
+    public function userCart(SettingsRepository $settingsRepository, Request $request, UserInterface $user, CartRepository $cartRepository)
     {
         $cart_count = 0;
         if($this->isGranted('ROLE_USER') || $this->isGranted('ROLE_ADMIN'))
@@ -157,6 +269,9 @@ class FrontController extends AbstractController
             'title' => 'Cart',
             'carts' => $cartRepository->findAll(['added_by' => $user]),
             'cart_count' => $cart_count,
+            'setting' => $settingsRepository->findAll()[0],
+            'description' => $settingsRepository->findAll()[0]->getDescription(),
+            'keywords' => $settingsRepository->findAll()[0]->getKeywords(),
         ];
 //        dump($cartRepository->findBy(['added_by' => $user]));
 //        die();
@@ -171,7 +286,7 @@ class FrontController extends AbstractController
      * @param FoodRepository $foodRepository
      * @return Response|JsonResponse
      */
-    public function addToCart(Request $request, UserRepository $userRepository, CartRepository $cartRepository, FoodRepository $foodRepository)
+    public function addToCart(SettingsRepository $settingsRepository,Request $request, UserRepository $userRepository, CartRepository $cartRepository, FoodRepository $foodRepository)
     {
 //        $response = JsonResponse::fromJsonString('{ "data": 123 }');
         $amount = $request->query->get('amount');
@@ -201,161 +316,7 @@ class FrontController extends AbstractController
 
     }
 
-    /**
-     * @Route("/profile/order", name="user-order")
-     * @param Request $request
-     * @param CartRepository $cartRepository
-     * @param UserInterface $user
-     * @param FoodRepository $foodRepository
-     * @param OdrRepository $odrRepository
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function orderList(Request $request, CartRepository $cartRepository , UserInterface $user, FoodRepository $foodRepository, OdrRepository $odrRepository)
-    {
 
-        $fids = $request->request->get('fids');
-        $amounts = $request->request->get('amt');
 
-        if($fids != null && $amounts != null)
-        {
-            $amounts = explode(',', $amounts);
-            $fids = explode(',', $fids);
-
-            $fam = [];
-            $foods = $foodRepository->findBy(['id' => $fids]);
-
-            for($i = 0; $i < count($fids); $i++)
-            {
-                $fam[(string)$fids[$i]] = $amounts[$i];
-            }
-            $em = $this->getDoctrine()->getManager();
-            for($i = 0; $i < count($foods); $i++)
-            {
-                $order = new Odr();
-                $order->setProduct($foods[$i]);
-                $order->setAmount($fam[$foods[$i]->getId()]);
-                $order->setOrderedBy($user);
-                $order->setOrderedAt(new DateTime());
-                $order->setStatus('Pending');
-
-                $crt = $cartRepository->findOneBy(['amount' => $fam[$foods[$i]->getId()], 'product' => $foods[$i]]);
-                if($crt != null)
-                    $em->remove($crt);
-                $em->persist($order);
-            }
-
-            try{
-                $em->flush();
-                $this->addFlash('success', "You Order have been made.");
-                return JsonResponse::fromJsonString('{"result" :  false}');
-            }catch (\Exception $e)
-            {
-                $this->addFlash('error', "Couldn't Make Order");
-                return JsonResponse::fromJsonString('{"result" :  true}');
-            }
-        }
-        $myOrder = $odrRepository->findBy(['ordered_by'=> $user]);
-        $cart_count = 0;
-        if($this->isGranted('ROLE_USER') || $this->isGranted('ROLE_ADMIN'))
-            $cart_count =  $cartRepository->createQueryBuilder('a')
-                ->select('count(a.id)')
-                ->getQuery()
-                ->getSingleScalarResult();
-        $transferValue = [
-            'title' => "Orders",
-            'orders' => $myOrder,
-            'cart_count' => $cart_count,
-        ];
-        return $this->render('front/SubTwig/Order/order.html.twig', $transferValue);
-//        return $this->generateUrl('front.user-order', $transferValue);
-//        return $this->redirectToRoute('front.user-order', $transferValue);
-//        return $this->redirect('')
-    }
-
-    /**
-     * @Route("/profile/order/confirm", name="user-confirm-order")
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function profileOrder(Request $request, CartRepository $cartRepository, FoodRepository $foodRepository)
-    {
-        //get all the queries that was pass
-        $f = $request->query->get('fids');
-        $fids = explode(',', $f);
-        $a = $request->query->get('amt');
-        $amounts = explode(',', $a);
-        //make empyt food and amount array to store them
-        $fam = [];
-
-        for($i = 0; $i < count($fids); $i++)
-        {
-            //push food and amount in the array as sub array
-            array_push($fam, ([$fids[$i], $amounts[$i]]));
-        }
-        $foods = $foodRepository->findBy(['id' => $fids]);
-
-        $cart_count = 0;
-        if($this->isGranted('ROLE_USER') || $this->isGranted('ROLE_ADMIN'))
-            $cart_count =  $cartRepository->createQueryBuilder('a')
-                ->select('count(a.id)')
-                ->getQuery()
-                ->getSingleScalarResult();
-        $transferValue = [
-            'title' => "Confirm Orders",
-            'cart_count' => $cart_count,
-            'foods'=> $foods,
-            'amounts' => $fam,
-            'fids' => $f,
-            'amount' => $a,
-            'foodids' => $fids,
-            'foodamount' => $amounts,
-        ];
-        return $this->render('front/SubTwig/Order/confirm-order.html.twig', $transferValue);
-    }
-
-    /**
-     * @Route("/{id}", name="odr_delete", methods={"DELETE"})
-     */
-    public function deleteOrder(Request $request, Odr $odr): \Symfony\Component\HttpFoundation\Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$odr->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($odr);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('front.user-order');
-    }
-
-    /**
-     * @Route("comment/profile/new", name="comment_new", methods={"GET","POST"})
-     * @param Request $request
-     * @param UserInterface $user
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Exception
-     */
-    public function new(Request $request, UserInterface $user): \Symfony\Component\HttpFoundation\Response
-    {
-        $comment = new Comment();
-        $form = $this->createForm(CommentType::class, $comment);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted()) {
-            $comment->setCommentedBy($user);
-            $comment->setCommentedAt(new DateTime());
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($comment);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('front.food-detail', ['id' => $comment->getProduct()->getId()]);
-        }
-
-        return $this->render('comment/new.html.twig', [
-            'comment' => $comment,
-            'form' => $form->createView(),
-        ]);
-    }
 
 }

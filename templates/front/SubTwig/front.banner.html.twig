@@ -5,9 +5,13 @@
         <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner">
                 {% for slider in sliders %}
+
                     <div class="carousel-item {{ loop.index == 1 ? "active" : "" }}">
                         <div class="" style="background-color: rgba(0,0,0,1)">
+                            <a href="{{ path('front.food-detail', {'id' : slider.food.id}) }}">
                             <img style="opacity: 0.7" class="d-block w-100" src="{{ asset('Upload/Images')}}/{{ slider.image.location }}" alt="First slide">
+                            </a>
+
                         </div>
                         <div class="carousel-caption d-none d-md-block" style="background-color: rgba(0,0,0,0)">
                             <h4>{{slider.title}}</h4>

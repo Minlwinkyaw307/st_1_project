@@ -1,13 +1,25 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/SubTwig/base.html.twig' %}
 
-{% block title %}Edit User{% endblock %}
+{% block title %}{{title}}{% endblock %}
 
 {% block body %}
-    <h1>Edit User</h1>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>Edit Category</strong>
+                <a href="{{ path('user_index') }}" class="btn btn-secondary btn-sm float-right">
+                    <i class="fa fa-arrow-left"></i> Back To List
+                </a>
+            </div>
+            <div class="card-body">
+                {{ include('admin/user/_form.html.twig', {'button_label': 'Update'}) }}
 
-    {{ include('admin/user/_form.html.twig', {'button_label': 'Update'}) }}
+            </div>
+            <div class="card-footer">
+                {{ include('admin/user/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 
-    <a href="{{ path('user_index') }}">back to list</a>
 
-    {{ include('admin/user/_delete_form.html.twig') }}
 {% endblock %}

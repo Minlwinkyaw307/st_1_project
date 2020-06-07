@@ -3,7 +3,7 @@
 
 <head>
     {% include('admin/SubTwig/header.html.twig') %}
-
+    <title>Login</title>
 </head>
 
 <body>
@@ -48,8 +48,8 @@
                         </form>
                         <div class="register-link">
                             <p>
-                                Already have account?
-                                <a href="#">Sign In</a>
+                                Join Us?
+                                <a href="{{ path('register_user') }}">Register</a>
                             </p>
                         </div>
                     </div>

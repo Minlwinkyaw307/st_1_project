@@ -22,7 +22,7 @@ class Slider
     private $title;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $content;
 
@@ -41,6 +41,11 @@ class Slider
      * @ORM\JoinColumn(onDelete="SET NULL")
      */
     private $image;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Food", inversedBy="sliders")
+     */
+    private $food;
 
     public function getId(): ?int
     {
@@ -103,6 +108,18 @@ class Slider
     public function setImage(?Image $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getFood(): ?Food
+    {
+        return $this->food;
+    }
+
+    public function setFood(?Food $food): self
+    {
+        $this->food = $food;
 
         return $this;
     }

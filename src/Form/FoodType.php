@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Food;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,8 +18,16 @@ class FoodType extends AbstractType
             ->add('price')
             ->add('keywords')
             ->add('description')
-            ->add('created_at')
-            ->add('updated_at')
+            ->add('images')
+            ->add('status', ChoiceType::class, [
+                'mapped' => false,
+                'choices' => [
+                    'Show' => 1,
+                    'Hiddent' => 0,
+                ]
+            ])
+//            ->add('created_at')
+//            ->add('updated_at')
             ->add('category', CategoryType::class)
         ;
     }

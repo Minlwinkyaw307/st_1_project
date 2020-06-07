@@ -39,7 +39,7 @@
                             for (i = 0; i < subcat.options.length; i++) {
                                 // console.log(subcat.options[i])
                                 var item = subcat.options[i];
-                                if (item.dataset.pid == -1) {
+                                if (item.dataset.pid == '-1') {
                                     item.hidden = false;
                                 }
                                 if (maincat.value == "-1") {
@@ -60,7 +60,7 @@
                 </div>
 
                 <div class="col-lg-4 col-md-4 col-sm-4 form-group">
-                    <label for="search">Please Select Food Category</label><br>
+                    <label for="search">Search By Meal name</label><br>
                     <input type="text" name="" id="search" class="form-control">
                 </div>
 
@@ -129,11 +129,14 @@
 
 
             subcat.onchange = function (e) {
-                if (subcat.value == -1) {
+                if (subcat.value == '-1') {
                     for (i = 0; i < mealContainer.children.length; i++) {
-                        if('d-none' in mealContainer.children[i].classList)
+                        console.log(mealContainer.children[i].classList.contains('d-none'))
+                        console.log(mealContainer.children[i].classList)
+                        if(mealContainer.children[i].classList.contains('d-none'))
                         {
                             // if(!currentItem.classList.contains('search-result'))
+                            console.log("Changed")
                                 mealContainer.children[i].classList.remove('d-none');
                         }
                     }

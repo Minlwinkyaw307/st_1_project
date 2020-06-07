@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -55,8 +57,30 @@ class Food
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Category")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $category;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Image", inversedBy="foods")
+     */
+    private $images;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $status;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Slider", mappedBy="food")
+     */
+    private $sliders;
+
+    public function __construct()
+    {
+        $this->images = new ArrayCollection();
+        $this->sliders = new ArrayCollection();
+    }
 
     /**
      * @return mixed
@@ -167,6 +191,75 @@ class Food
     {
         // TODO: Implement __toString() method.
         return $this->getName();
+    }
+
+    /**
+     * @return Collection|Image[]
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Image $image): self
+    {
+        if (!$this->images->contains($image)) {
+            $this->images[] = $image;
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): self
+    {
+        if ($this->images->contains($image)) {
+            $this->images->removeElement($image);
+        }
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Slider[]
+     */
+    public function getSliders(): Collection
+    {
+        return $this->sliders;
+    }
+
+    public function addSlider(Slider $slider): self
+    {
+        if (!$this->sliders->contains($slider)) {
+            $this->sliders[] = $slider;
+            $slider->setFood($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSlider(Slider $slider): self
+    {
+        if ($this->sliders->contains($slider)) {
+            $this->sliders->removeElement($slider);
+            // set the owning side to null (unless already changed)
+            if ($slider->getFood() === $this) {
+                $slider->setFood(null);
+            }
+        }
+
+        return $this;
     }
 
 }

@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Settings;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -26,7 +27,11 @@ class SettingsType extends AbstractType
             ->add('linkedin')
             ->add('smtpserver')
             ->add('smtpemail')
-            ->add('smtppasw')
+            ->add('smtppasw', PasswordType::class, [
+                'attr' => [
+                    'type' => 'password',
+                ]
+            ])
             ->add('smtpport')
             ->add('aboutus')
             ->add('contact')

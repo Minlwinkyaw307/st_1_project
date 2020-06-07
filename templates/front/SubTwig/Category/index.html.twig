@@ -1,6 +1,8 @@
 {% extends 'front/SubTwig/front.base.html.twig' %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}{{title}}{% endblock %}
+{% block keywords %}{{ keywords ? keywords : setting.keywords }}{% endblock %}
+{% block description %}{{ description ? description : setting.description }}{% endblock %}
 {% block body %}
     <div class="" style="height: 100px; width: 100%"></div>
     <script>
@@ -12,14 +14,32 @@
                 e.nextElementSibling.classList.add('d-none');
             }
         }
+        function addToCartOne(foodid, uid, name)
+        {
+            $.get('{{ path('front.cart_add') }}?fid='+ foodid +'&amount=1&uid=' + uid,
+                function(data, status){
+                    console.log();
+                    if(data['result'] === true )
+                    {
+                        alert(name + " has been added to cart");
+                        var cartAmount = document.getElementById('cart-amount');
+                        if(cartAmount)
+                        {
+                            cartAmount.innerText = parseInt(cartAmount.innerText) + 1;
+                        }
+                    }else{
+                        alert("Couldn't add " + name + " to cart. Please try again.");
+                    }
+                });
+        }
     </script>
-    <div class="container">
+    <div class="container"  style="padding-bottom: 50px;">
         <div class="row">
             <div class="col col-lg-3 col-md-3 col-sm-12">
 {#                <h3 class="">All Categories</h3>#}
 {#                <br>#}
                 {% for category in categories %}
-                    {% if category.parentid == null %}
+                    {% if category.parentid == null and category.status == 'Published'%}
                         <div class="py-1 px-3 border">
                             <h5 class="py-1 text-dark" id="text-hello" onclick="ShowSubCategories(this)"
                                 style="cursor: pointer;">{{ category.name }} <small class="float-right"><i
@@ -67,16 +87,24 @@
                                     <a href="{{ path('front.food-detail', {'id' : food.id}) }}">
                                         <img src="{{ asset('Upload/Images/') }}/{{ food.image.location }}"
                                              class="card-img-top"
-                                             alt="..." style="object-fit: cover;">
+                                             alt="..." style="object-fit: cover; height: 150px;">
                                         <div class="card-body">
                                             <h6 class="card-title title">{{ food.name }}
                                                 <span class="badge badge-dark price"><i
                                                             class="fa fa-dollar"></i> {{ food.price }}</span>
                                             </h6>
                                     </a>
-                                    <a href="#" class="btn btn-primary btn-sm float-right">Order</a>
-                                    <a href="#" class="btn btn-outline-secondary btn-sm float-left"><i
-                                                class="fa fa-shopping-cart"></i> Add To Cart</a>
+                                    {% if app.user %}
+                                    <a href="{{ path('front.user-confirm-order') }}?fids={{ food.id }}&amt=1"s class="btn btn-primary btn-sm float-right">Order</a>
+                                    <button class="btn btn-outline-secondary btn-sm float-left"
+                                            class="fa fa-shopping-cart"
+                                            onclick="addToCartOne({{ food.id }}, {{ app.user.id }}, '{{ food.name }}')"> Add To Cart</button>
+                                    {% else %}
+                                        <div class="col lg-12">
+                                            <a href="{{ path('app_login') }}" class="btn btn-outline-primary float-right">Sign In To Order</a>
+                                        </div>
+                                        <div style="clear: left;"></div>
+                                    {% endif %}
                                 </div>
                             </div>
                             {% else %}
@@ -93,4 +121,5 @@
         </div>
     </div>
     </div>
+    {{ include('front/SubTwig/front.footer.html.twig') }}
 {% endblock %}

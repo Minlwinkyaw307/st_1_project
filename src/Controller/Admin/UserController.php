@@ -24,7 +24,29 @@ class UserController extends AbstractController
     public function index(UserRepository $userRepository): Response
     {
         return $this->render('admin/user/index.html.twig', [
+            'title' => "All Users",
             'users' => $userRepository->findAll(),
+        ]);
+    }
+
+    /**
+     * @Route("/admins", name="user_admin_index", methods={"GET"})
+     */
+    public function adminInddex(UserRepository $userRepository): Response
+    {
+        return $this->render('admin/user/index.html.twig', [
+            'title' => "Admins",
+            'users' => $userRepository->findBy(['roles' => 'ROLE_ADMIN']),
+        ]);
+    }
+    /**
+     * @Route("/normal-users", name="user_normal_index", methods={"GET"})
+     */
+    public function normalIndex(UserRepository $userRepository): Response
+    {
+        return $this->render('admin/user/index.html.twig', [
+            'title' => "Normal",
+            'users' => $userRepository->findBy(['roles' => 'ROLE_USER']),
         ]);
     }
 
@@ -47,6 +69,7 @@ class UserController extends AbstractController
 
             $user = $form->getData();
             $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword()));
+            $user->setRoles($request->request->get('user')['roles']);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
@@ -55,6 +78,7 @@ class UserController extends AbstractController
         }
 
         return $this->render('admin/user/new.html.twig', [
+            'title' => "New User",
             'user' => $user,
             'form' => $form->createView(),
         ]);
@@ -67,6 +91,7 @@ class UserController extends AbstractController
     public function show(User $user): Response
     {
         return $this->render('admin/user/show.html.twig', [
+            'title' => $user->getUsername(),
             'user' => $user,
         ]);
     }
@@ -76,18 +101,19 @@ class UserController extends AbstractController
     /**
      * @Route("/{id}/edit", name="user_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, User $user): Response
+    public function edit(Request $request, User $user, UserRepository $userRepository): Response
     {
+        $u = $userRepository->findOneBy(['id' => 10]);
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
             $this->getDoctrine()->getManager()->flush();
-
             return $this->redirectToRoute('user_index');
         }
 
         return $this->render('admin/user/edit.html.twig', [
+            'title' => "Edit User",
             'user' => $user,
             'form' => $form->createView(),
         ]);

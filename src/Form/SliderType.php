@@ -16,6 +16,7 @@ class SliderType extends AbstractType
             ->add('content')
             ->add('status')
             ->add('image')
+            ->add('food')
         ;
     }
 
