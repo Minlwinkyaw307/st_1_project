@@ -1,0 +1,105 @@
+{% extends 'front/SubTwig/front.base.html.twig' %}
+
+{% block title %}{{title}}{% endblock %}
+{% block keywords %}{{ keywords ? keywords : setting.keywords }}{% endblock %}
+{% block description %}{{ description ? description : setting.description }}{% endblock %}
+{% block body %}
+    <div class="" style="height: 100px; width: 100%"></div>
+    <script>
+        function ShowSubCategories(e) {
+            console.log(e.nextElementSibling);
+            if (e.nextElementSibling.classList.contains('d-none')) {
+                e.nextElementSibling.classList.remove('d-none')
+            } else {
+                e.nextElementSibling.classList.add('d-none');
+            }
+        }
+    </script>
+    <div class="container">
+        <div class="row">
+            {% include('front/SubTwig/profile-nav.html.twig') %}
+            <div class="col col-lg-9 col-md-9 col-sm-12">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="px-4 py-2">Settings</h3>
+                    </div>
+                    <div class="card-body">
+                        {% for message in app.flashes('success') %}
+                            <div class="alert alert-success">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                        {% for message in app.flashes('error') %}
+                            <div class="alert alert-danger">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                        <div class="row">
+                            <div class="col col-lg-8 col-md-8 col-sm-12">
+
+                                <form class="px-4" action="{{ path('front.user-general-update') }}" method="POST">
+                                    <h5>Change Username</h5>
+                                    <hr>
+                                    <div class="form-group">
+                                        <label for="email">Email address</label>
+                                        <input type="email" name="user[email]" class="form-control" id="email"  value="{{ app.user.email }}" readonly>
+                                        <input type="number" name="user[id]" class="form-control" id="email"  value="{{ app.user.id }}" hidden="">
+                                        <small id="" class="form-text text-muted">Your Email Address.(Can't change)</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="username">Username</label>
+                                        <input type="text" name="user[username]" class="form-control" id="username" value="{{ app.user.username }}">
+                                    </div>
+                                    <button type="submit" class="btn btn-sm btn-primary">Change User Name</button>
+                                    <br>
+                                    <hr>
+                                    <h5>Reset Password</h5>
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <input type="password" name="user[password]" class="form-control" id="password" placeholder="Enter your new password">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="repassword">Retyp-Password</label>
+                                        <input type="password" name="user[repassword]" class="form-control" id="repassword" placeholder="Enter your new password again">
+                                    </div>
+                                    <div>
+                                        <button type="submit" class="btn btn-sm btn-primary">Reset Password</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col col-lg-4 col-md-4 col-sm-12">
+                                {% if app.user.profileImg %}
+                                    <img src="{{ asset('Upload/Images') }}/{{ app.user.profileImg.location }}"  alt="" class="border border-dark">
+                                {% else %}
+                                    <img src="{{ asset('Upload/Images/no-profile-pic-icon-5.jpg') }}"  alt="" class="border border-dark">
+                                {% endif %}
+
+                                <div class="my-2">
+                                    <button class="btn btn-sm btn-info float-right" onclick="OpenOnTop('{{ path('profile_image_update', {'id' : app.user.id}) }}')">Change</button>
+                                    <script>
+                                        function OpenOnTop(url)
+                                        {
+                                            var topWin = window.open(url, "name", "width=750,height=500");
+                                            var timer = setInterval(function() {
+                                                if(topWin.closed) {
+                                                    location.reload();
+                                                    clearInterval(timer);
+                                                }
+                                            }, 1000);
+                                        }
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="" style="height: 100px; width: 100%"></div>
+    {{ include('front/SubTwig/front.footer.html.twig') }}
+{% endblock %}

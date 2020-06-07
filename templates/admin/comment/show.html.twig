@@ -1,0 +1,55 @@
+{% extends 'admin/SubTwig/base.html.twig' %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block body %}
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <h1 style="display: inline-block">Comment Detail </h1>
+            <a href="{{ path('comment_index') }}" class="btn btn-dark btn-sm float-right">
+                <i class="fa fa-arrow-left"></i> back to list
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="col-md-12">
+                <div class="table-responsive m-b-40">
+                    <table class="table table-condensed table-bordered table-data3">
+                        <tbody>
+                            <tr>
+                                <th class="bg-dark text-white">Id</th>
+                                <td>{{ comment.id }}</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-dark text-white">Rate</th>
+                                <td>{{ comment.rate }}</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-dark text-white">Commented By</th>
+                                <td>{{ comment.commentedBy.username }}</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-dark text-white">Post ID</th>
+                                <td>{{ comment.product.id }}</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-dark text-white">Comment</th>
+                                <td>{{ comment.comment | raw}}</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-dark text-white">Commente At</th>
+                                <td>{{ comment.commentedAt ? comment.commentedAt|date('Y-m-d H:i:s') : '' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <a class="float-right btn btn-sm btn-primary" href="{{ path('comment_edit', {'id': comment.id}) }}">edit</a>
+            {{ include('admin/comment/_delete_form.html.twig') }}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

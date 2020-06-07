@@ -1,0 +1,47 @@
+{% extends 'admin/SubTwig/base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <div class="col-md-12">
+        <div class="table-responsive m-b-40">
+            <table class="table table-borderless table-data3">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Food Name</th>
+                    <th>Food Price</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Ordered At</th>
+                    <th>Edit</th>
+                    <th>Show</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for odr in odrs %}
+                    <tr>
+                        <td>{{ odr.id }}</td>
+                        <td>{{ odr.product.name }} <span class="badge badge-primary"><i class="fa fa-dollar"></i> {{ odr.product.price * odr.amount }}</span></td>
+                        <td><i class="fa fa-dollar"></i> {{ odr.product.price }}</td>
+                        <td>{{ odr.amount }}</td>
+                        <td>{{ odr.status }}</td>
+                        <td>{{ odr.orderedAt ? odr.orderedAt|date('H:i:s, Y-m-d') : '' }}</td>
+                        <td>
+                            <a class="btn btn-primary btn-sm" href="{{ path('odr_show', {'id': odr.id}) }}">show</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-primary btn-sm" href="{{ path('odr_edit', {'id': odr.id}) }}">Edit</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="7">no records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+{#        <a href="{{ path('odr_new') }}">Create new</a>#}
+    </div>
+{% endblock %}

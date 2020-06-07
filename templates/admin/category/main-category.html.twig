@@ -1,0 +1,67 @@
+{% extends 'admin/SubTwig/base.html.twig' %}
+
+{% block title %}Category index{% endblock %}
+
+{% block body %}
+    <div class="col-md-12">
+        <div class="table-responsive m-b-40">
+            <table class="table table-borderless table-data3">
+
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>PID</th>
+                    <th aria-colspan="2">Name</th>
+                    <th>Keywords</th>
+                    <th>Description</th>
+                    {#                    <th>Image</th>#}
+                    {#                    <th>Status</th>#}
+                    {#                    <th>Created_at</th>#}
+                    {#                    <th>Updated_at</th>#}
+                    <th>View</th>
+                    <th>Edit</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for category in categories %}
+                    <tr>
+                        <td>{{ category.id }}</td>
+                        {% if category.parentid %}
+                            <td>{{ category.parentid.name }}</td>
+                        {% else %}
+                            <td>Main Category</td>
+                        {% endif %}
+                        <td>
+                            {{ category.name }}
+                            {% if category.status == 'Unpublished' %}
+                                <span class="badge badge-danger ">Unpublished</span>
+                            {% else %}
+                                <span class="badge badge-primary">Published</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ category.keywords }}</td>
+                        <td class="text-truncate" style="max-width: 100px;">{{ category.description }}</td>
+                        <td>
+                            <a class="btn btn-primary btn-sm" href="{{ path('category_show', {'id': category.id}) }}">
+                                <i class="fa fa-sign-in-alt"></i> Show
+                            </a>
+                        </td>
+                        <td>
+                            <a class="btn btn-success btn-sm" href="{{ path('category_edit', {'id': category.id}) }}">
+                                <i class="fa fa-edit"></i> edit
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="10">no records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <a class="btn btn-primary float-right" role="button" href="{{ path('category_new') }}">Create new</a>
+
+    </div>
+
+{% endblock %}

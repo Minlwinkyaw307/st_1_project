@@ -1,0 +1,34 @@
+{% extends 'front/SubTwig/front.base.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block keywords %}{{ keywords ? keywords : setting.keywords }}{% endblock %}
+{% block description %}{{ description ? description : setting.description }}{% endblock %}
+{% block body %}
+<!-- banner -->
+<div class="innerpage-banner" id="home">
+    <div class="inner-page-layer">&nbsp;</div>
+</div>
+<!-- //banner --><!-- contact -->
+
+<div class="container pt-lg-5">
+    <h2>Contact Us</h2>
+
+    <div class="agileinfo_mail_grids row">
+        <div class="agileinfo_mail_grid_right col-lg-8">
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            <div class="col-lg-8 agileinfo_mail_grid_right">
+
+            {% include('admin/message/_form.html.twig') %}
+            </div>
+            <br><br>
+            <hr>
+            {{ setting.contact | raw }}
+            <br><br>
+        </div>
+    </div>
+    {% include 'front/SubTwig/front.footer.html.twig' %}
+{% endblock %}
